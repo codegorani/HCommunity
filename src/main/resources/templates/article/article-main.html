@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="layout/header" th:remove="tag"></div>
+<body>
+<table>
+    <tr>
+        <td>제목</td>
+        <td>작성자</td>
+        <td>작성일</td>
+    </tr>
+    <tr th:each="article: ${articleList}">
+        <td><a th:href="@{/article/view/{id}(id=${article.idx})}" th:text="${article.title}"></a></td>
+        <td th:text="${article.username}"></td>
+        <td th:text="${article.createdDate}"></td>
+    </tr>
+</table>
+<div th:replace="layout/footer" th:remove="tag"></div>
+</body>
+</html>

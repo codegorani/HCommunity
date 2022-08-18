@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="layout/header" th:remove="tag"></div>
+<body>
+
+<div class="col col-md-12">
+    <div class="col col-md-6">
+        <form>
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:if="${user != null}" th:value="${user.nickname}" readonly/>
+                <input type="text" class="form-control" id="title" th:if="${user == null}" value="헬로우?" readonly/>
+            </div>
+            <div class="form-group">
+                <label for="content">상세내용</label>
+                <textarea class="form-control" id="content" readonly>
+1. 김태민 바보
+2. 내가 친히 만들어줌
+3. ㄱㄷㄱㄷ
+                </textarea>
+            </div>
+            <button type="button" id="btn-modify" class="btn btn-primary active">수정</button>
+            <button type="button" class="btn btn-danger">삭제</button>
+        </form>
+    </div>
+</div>
+<div th:replace="layout/footer" th:remove="tag"></div>
+<script th:src="@{/js/user/Query.js}"></script>
+</body>
+</html>

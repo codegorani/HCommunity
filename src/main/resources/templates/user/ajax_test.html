@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="layout/header" th:remove="tag"></div>
+<body>
+<button id="btn-ajax">클릭</button>
+<div th:replace="layout/footer" th:remove="tag"></div>
+<script th:src="@{/js/user/User.js}"></script>
+</body>
+</html>
