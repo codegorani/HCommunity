@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUser;
 import org.hcom.models.article.dtos.request.ArticleSaveRequestDTO;
 import org.hcom.models.like.dtos.request.LikeDTO;
-import org.hcom.models.reply.dtos.request.ReplySaveRequestDTO;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.springframework.context.annotation.PropertySource;
@@ -27,7 +26,7 @@ public class ArticleAPIController {
         return articleService.articleSaveService(requestDTO, sessionUser);
     }
 
-    @PostMapping("/api/v1/like")
+    @PostMapping("/api/v1/article/like")
     public void articleLikeControl(@RequestBody LikeDTO likeDTO, @LoginUser SessionUser sessionUser) {
         if(sessionUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
@@ -35,7 +34,7 @@ public class ArticleAPIController {
         articleService.articleLikeService(likeDTO, sessionUser);
     }
 
-    @PostMapping("/api/v1/dislike")
+    @PostMapping("/api/v1/article/dislike")
     public void articleDislikeControl(@RequestBody LikeDTO likeDTO, @LoginUser SessionUser sessionUser) {
         if(sessionUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
@@ -49,21 +48,5 @@ public class ArticleAPIController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
         }
         articleService.articleDeleteByArticleIdxService(idx, sessionUser);
-    }
-
-    @PostMapping("/api/v1/reply")
-    public void replySaveControl(@RequestBody ReplySaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
-        if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
-        }
-        articleService.replySaveService(sessionUser, requestDTO);
-    }
-
-    @DeleteMapping("/api/v1/reply/{replyIdx}")
-    public void replyDelete(@PathVariable("replyIdx") Long idx, @LoginUser SessionUser sessionUser) {
-        if (sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
-        }
-        articleService.replyDeleteService(idx, sessionUser);
     }
 }

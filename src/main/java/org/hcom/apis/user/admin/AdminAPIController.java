@@ -1,10 +1,10 @@
-package org.hcom.apis.admin;
+package org.hcom.apis.user.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUser;
 import org.hcom.models.common.ResponseResult;
 import org.hcom.models.user.dtos.SessionUser;
-import org.hcom.models.user.dtos.admin.request.AdminModifyRequestDTO;
+import org.hcom.models.user.admin.request.AdminModifyRequestDTO;
 import org.hcom.models.user.dtos.request.UserGradeRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.services.admin.AdminService;

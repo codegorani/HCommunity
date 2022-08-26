@@ -1,4 +1,4 @@
-package org.hcom.models.user.dtos.admin.request;
+package org.hcom.models.user.admin.request;
 
 import lombok.*;
 import org.hcom.models.user.enums.UserGrade;

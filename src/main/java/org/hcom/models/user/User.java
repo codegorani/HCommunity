@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.*;
 import org.hcom.models.article.Article;
 import org.hcom.models.common.BaseTimeEntity;
-import org.hcom.models.user.dtos.admin.request.AdminModifyRequestDTO;
+import org.hcom.models.user.admin.request.AdminModifyRequestDTO;
 import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
 import org.hcom.models.user.enums.UserGrade;
 import org.hcom.models.user.enums.UserRole;

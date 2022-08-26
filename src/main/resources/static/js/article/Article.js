@@ -65,7 +65,7 @@ const article = {
             location.href = '/login'
         } else {
             $.ajax({
-                url: '/api/v1/like',
+                url: '/api/v1/article/like',
                 method: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'text',
@@ -89,7 +89,7 @@ const article = {
             location.href = '/login'
         } else {
             $.ajax({
-                url: '/api/v1/dislike',
+                url: '/api/v1/article/dislike',
                 method: 'POST',
                 contentType: 'application/json; charset=utf-8',
                 dataType: 'text',

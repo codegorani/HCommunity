@@ -3,7 +3,7 @@ package org.hcom.services.admin;
 import lombok.RequiredArgsConstructor;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.SessionUser;
-import org.hcom.models.user.dtos.admin.request.AdminModifyRequestDTO;
+import org.hcom.models.user.admin.request.AdminModifyRequestDTO;
 import org.hcom.models.user.dtos.request.UserGradeRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.enums.UserRole;

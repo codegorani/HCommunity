@@ -1,6 +1,7 @@
-package org.hcom.config.security.authorize;
+package org.hcom.config.security;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.config.security.authorize.LoginUserArgumentResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
