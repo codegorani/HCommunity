@@ -1,7 +1,7 @@
-package org.hcom.models.article;
+package org.hcom.models.like;
 
 import lombok.*;
-import org.hcom.models.common.BaseTimeEntity;
+import org.hcom.models.article.Article;
 import org.hcom.models.user.User;
 
 import javax.persistence.*;
@@ -11,19 +11,16 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-public class Article extends BaseTimeEntity {
+@Entity(name = "like_table")
+public class Like {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long idx;
 
-    @Column(length = 500)
-    private String title;
-
-    @Column(columnDefinition = "TEXT")
-    private String contents;
-
     @ManyToOne
     private User user;
+
+    @ManyToOne
+    private Article article;
 }

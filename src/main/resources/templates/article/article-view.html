@@ -3,9 +3,61 @@
       xmlns:th="http://www.thymeleaf.org">
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
-    <h2 th:text="${response.title}"></h2>
-    <p th:text="'작성자' + ' ' + ${response.username}"></p>
-    <div id="contents" th:utext="${response.contents}"></div>
+<div th:replace="fragments/common :: header"></div>
+    <input type="hidden" id="article-idx" th:value="${article.idx}"/>
+    <table class="table table-horizontal">
+        <tr>
+            <td colspan="3"><h2 th:text="${article.title}"></h2></td>
+        </tr>
+        <tr>
+            <td>작성자</td>
+            <td>추천수</td>
+            <td>댓글수</td>
+        </tr>
+        <tr>
+            <td th:text="${article.nickname}"></td>
+            <td th:if="${article.isLike == 0}"><a id="btn-like" th:data-idx="${article.idx}" th:text="${article.allLike} + '🤍'"></a></td>
+            <td th:if="${article.isLike == 1}"><a id="btn-dislike" th:data-idx="${article.idx}" th:text="${article.allLike} + '❤'"></a></td>
+            <td th:text="${article.allReply}"></td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div id="contents" th:utext="${article.contents}"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <div id="reply-box" >
+                    <label for="reply-content">댓글쓰기</label>
+                    <textarea id="reply-content"></textarea>
+                    <button type="button" id="btn-reply-save" class="btn btn-primary">작성</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <hr style="width: 3px"/>
+    <table>
+        <tr>
+            <td>댓글</td>
+            <td colspan="2"></td>
+        </tr>
+        <tr th:each="reply: ${article.replyList}">
+            <td th:text="${reply.nickname}"></td>
+            <td th:text="${reply.replyContent}"></td>
+            <td th:text="${reply.createdDate}"></td>
+            <td th:if="${reply.nickname == sessionUser.nickname}"><a class="btn-reply-delete" th:data-idx="${reply.idx}">❌</a></td>
+        </tr>
+        <tr>
+            <td>
+                <a role="button" class="btn btn-secondary" th:href="@{/article}">목록으로</a>
+            </td>
+            <td>
+                <button th:if="${article.nickname == sessionUser.nickname}" data-page="all" th:data-idx="${article.idx}" class="btn btn-danger btn-article-delete" role="button">게시글삭제</button>
+            </td>
+        </tr>
+    </table>
 <div th:replace="layout/footer" th:remove="tag"></div>
+<script th:src="@{/js/article/Article.js}"></script>
+<div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

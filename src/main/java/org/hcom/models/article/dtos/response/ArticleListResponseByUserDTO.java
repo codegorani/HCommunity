@@ -10,19 +10,16 @@ import java.time.format.DateTimeFormatter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleListResponseDTO {
+public class ArticleListResponseByUserDTO {
     private Long idx;
     private String title;
-    private String nickname;
     private String createdDate;
-    private Long isLike;
-    private Long allLike;
     private Long allReply;
+    private Long allLike;
 
-    public ArticleListResponseDTO(Article article) {
+    public ArticleListResponseByUserDTO(Article article) {
         this.idx = article.getIdx();
         this.title = article.getTitle();
-        this.nickname = article.getUser().getNickname();
         this.createdDate = article.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }

@@ -53,7 +53,6 @@ public class UserSaveRequestDTO {
                 .userRole(UserRole.USER)
                 .userGrade(UserGrade.BRONZE)
                 .userPoint(0)
-                .articleList(new ArrayList<>())
                 .build();
     }
 }

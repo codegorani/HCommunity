@@ -9,16 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class IndexController {
     @GetMapping("/")
-    public String index(Model model, @LoginUser SessionUser user) {
-        if (user != null) {
-            model.addAttribute("user", user);
+    public String index(Model model, @LoginUser SessionUser sessionUser) {
+        if (sessionUser != null) {
+            model.addAttribute("sessionUser", sessionUser);
         }
         return "index";
-    }
-
-    @GetMapping("/signup")
-    public String signup() {
-        return "/user/signup";
     }
 
     @GetMapping("/test")

@@ -1,6 +1,8 @@
 package org.hcom.services.user;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.models.like.support.LikeRepository;
+import org.hcom.models.reply.support.ReplyRepository;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
@@ -31,6 +33,8 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
+    private final ReplyRepository replyRepository;
     private final HttpSession httpSession;
 
     /**
@@ -47,8 +51,9 @@ public class UserService implements UserDetailsService {
         user.setLastLoginTime(LocalDateTime.now());
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getUserRole().getRole()));
+        System.out.println(user.getUserRole().getRole());
         httpSession.setAttribute("user", new SessionUser(user));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
 
     /**
@@ -170,7 +175,10 @@ public class UserService implements UserDetailsService {
         }
         if ((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
+            likeRepository.deleteAllByUser(user);
+            replyRepository.deleteAllByUser(user);
             userRepository.delete(user);
+            httpSession.invalidate();
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
         }

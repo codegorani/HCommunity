@@ -1,5 +1,6 @@
 package org.hcom.models.user;
 
+import com.google.common.collect.Lists;
 import lombok.*;
 import org.hcom.models.article.Article;
 import org.hcom.models.common.BaseTimeEntity;
@@ -96,9 +97,8 @@ public class User extends BaseTimeEntity {
     @Column
     private String address2;
 
-    @JoinColumn
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Article> articleList;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Article> articleList = Lists.newArrayList();
 
     // update password
     public void passwordReset(String newPassword) {

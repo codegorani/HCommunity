@@ -5,6 +5,10 @@
 
 <mapper namespace="org.hcom.models.user.support.UserMapper">
     <select id="selectUserByUsername" resultType="User">
-        SELECT * FROM USER User WHERE username = #{username}
+        SELECT * FROM USER User WHERE username = #{username};
+    </select>
+
+    <select id="findAll" resultType="list">
+        SELECT * FROM USER;
     </select>
 </mapper>

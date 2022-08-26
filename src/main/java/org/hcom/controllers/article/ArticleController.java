@@ -2,19 +2,24 @@ package org.hcom.controllers.article;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
+import org.hcom.config.security.authorize.LoginUser;
 import org.hcom.models.article.Article;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
+import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +37,10 @@ public class ArticleController {
     private String uploadPath;
 
     @GetMapping("/article/new")
-    public String articleNew() {
+    public String articleNew(@LoginUser SessionUser sessionUser) {
+        if (sessionUser == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+        }
         return "article/article_new";
     }
 
@@ -90,23 +98,25 @@ public class ArticleController {
     }
 
     @GetMapping("/article/view/{articleIdx}")
-    public String viewArticle(@PathVariable("articleIdx") Long idx, Model model) {
-        ArticleDetailResponseDTO responseDTO = articleService.articleViewService(idx);
-        model.addAttribute("response", responseDTO);
+    public String viewArticle(@PathVariable("articleIdx") Long idx, @LoginUser SessionUser sessionUser, Model model) {
+        ArticleDetailResponseDTO responseDTO = articleService.articleViewService(idx, sessionUser);
+        model.addAttribute("article", responseDTO);
+        model.addAttribute("sessionUser", sessionUser);
         return "article/article-view";
     }
 
-    @GetMapping("/article/{pageNum}")
-    public String viewArticleList(@PathVariable("pageNum") int page, Model model) {
-        Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(page - 1);
-        model.addAttribute("articleList", articlePage);
-        return "article/article-main";
-    }
-
     @GetMapping("/article")
-    public String viewArticleMain(Model model) {
-        Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(0);
+    public String viewArticleMain(Model model, @LoginUser SessionUser sessionUser,
+                                  @RequestParam(required = false) String search, @RequestParam(required = false) Long page) {
+        int requestPage;
+        if(page == null) {
+            requestPage = 0;
+        } else {
+            requestPage = (int) (page - 1);
+        }
+        Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(requestPage, sessionUser, search);
         model.addAttribute("articleList", articlePage);
+        model.addAttribute("sessionUser", sessionUser);
         return "article/article-main";
     }
 }

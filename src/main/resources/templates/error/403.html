@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="layout/header" th:remove="tag"></div>
+<body>
+<div th:replace="fragments/common :: header"></div>
+<div class="errorPage">
+    <h1 class="errorHead">FORBIDDEN 권한이 없습니다.</h1><br />
+    <a href="/">홈으로 돌아가기</a>
+    <p th:text="${'path: ' + path}"></p>
+    <p th:text="${'status: ' + status}"></p>
+    <p th:text="${'timestamp: ' + timestamp}"></p>
+    <p th:text="${'error: ' + error}"></p>
+    <p th:text="${'errors: ' + errors}"></p>
+    <p th:text="${'exception: ' + exception}"></p>
+    <p th:text="${'message: ' + message}"></p>
+    <p th:text="${'trace: ' + trace}"></p>
+</div>
+<div th:replace="layout/footer" th:remove="tag"></div>
+<div th:replace="fragments/common :: footer"></div>
+</body>
+</html>

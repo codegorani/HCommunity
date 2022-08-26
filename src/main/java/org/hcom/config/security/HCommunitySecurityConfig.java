@@ -1,6 +1,8 @@
 package org.hcom.config.security;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.config.security.authorize.CustomLoginSuccessHandler;
+import org.hcom.models.user.enums.UserRole;
 import org.hcom.services.user.UserService;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -32,7 +35,10 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().headers().frameOptions().disable();
 
         // authority
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeRequests()
+//                .antMatchers("/api/v1/**")
+//                .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name(), UserRole.MANAGER.name(), UserRole.DEVELOPER.name())
+                .anyRequest().permitAll();
 
         // login
         http.formLogin()
@@ -41,6 +47,7 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordParameter("password")
                 .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/")
+                .successHandler(successHandler())
                 .failureUrl("/login/error")
                 .permitAll();
 
@@ -63,5 +70,10 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return new CustomLoginSuccessHandler("/");
     }
 }

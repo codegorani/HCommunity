@@ -2,8 +2,15 @@
 <html lang="ko"
       xmlns:th="http://www.thymeleaf.org">
 <div th:replace="layout/header" th:remove="tag"></div>
+<div th:replace="fragments/common :: header"></div>
 <body class="text-center">
 <main class="form-signin">
+    <div th:if="${is401 == true}" class="alert alert-warning">
+        로그인이 필요한 서비스입니다. 로그인 후 이용해주세요.
+    </div>
+    <div th:if="${isError == true}" class="alert alert-danger">
+        아이디또는 패스워드가 일치하지 않습니다.
+    </div>
     <form th:action="@{/login}" method="POST">
         <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="" width="72" height="57">
         <h1 class="h3 mb-3 fw-normal">로그인 페이지</h1>
@@ -23,9 +30,9 @@
             </label>
         </div>
         <button id="btn-login" class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
     </form>
 </main>
 <div th:replace="layout/footer" th:remove="tag"></div>
+<div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

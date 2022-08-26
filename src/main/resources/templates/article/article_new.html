@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
+<div th:replace="fragments/common :: header"></div>
 <script th:src="@{/js/article/ckeditor/ckeditor.js}"></script>
 <form>
     <div class="form-group">
@@ -25,5 +26,6 @@
 <button class="btn btn-primary" id="btn-article-save">저장</button>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <script th:src="@{/js/article/Article.js}"></script>
+<div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

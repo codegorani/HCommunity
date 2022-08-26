@@ -3,18 +3,36 @@
       xmlns:th="http://www.thymeleaf.org">
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
-<table>
+<div th:replace="fragments/common :: header"></div>
+<input type="hidden" th:id="user" th:if="${sessionUser != null}" th:value="1"/>
+<input type="hidden" th:id="user" th:if="${sessionUser == null}" th:value="0"/>
+<div th:if="${articleList.size == 0}">
+    <h2>게시물이 없습니다.</h2>
+</div>
+<table class="table table-horizontal" th:if="${articleList.size != 0}">
     <tr>
         <td>제목</td>
         <td>작성자</td>
         <td>작성일</td>
+        <td>댓글수</td>
+        <td>추천수</td>
+        <td></td>
     </tr>
     <tr th:each="article: ${articleList}">
         <td><a th:href="@{/article/view/{id}(id=${article.idx})}" th:text="${article.title}"></a></td>
-        <td th:text="${article.username}"></td>
+        <td th:text="${article.nickname}"></td>
         <td th:text="${article.createdDate}"></td>
+        <td th:text="${article.allReply}"></td>
+        <td th:text="${article.allLike}"></td>
+        <td>
+            <a th:if="${article.isLike == 0}" id="btn-like" th:data-idx="${article.idx}">🤍</a>
+            <a th:if="${article.isLike == 1}" id="btn-dislike" th:data-idx="${article.idx}">❤</a>
+        </td>
     </tr>
 </table>
+<a role="button" class="btn btn-primary" th:href="@{/article/new}" th:if="${sessionUser != null}">게시물 작성</a>
 <div th:replace="layout/footer" th:remove="tag"></div>
+<script th:src="@{/js/article/Article.js}"></script>
+<div th:replace="fragments/common :: footer"></div>
 </body>
 </html>
