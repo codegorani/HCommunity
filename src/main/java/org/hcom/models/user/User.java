@@ -97,6 +97,7 @@ public class User extends BaseTimeEntity {
     @Column
     private String address2;
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Article> articleList = Lists.newArrayList();
 
@@ -126,5 +127,10 @@ public class User extends BaseTimeEntity {
         this.username = requestDTO.getUsername();
         this.nickname = requestDTO.getNickname();
         this.password = passwordEncoder.encode(requestDTO.getPassword());
+    }
+
+    public User inactive() {
+        this.userStatus = UserStatus.INACTIVE;
+        return this;
     }
 }

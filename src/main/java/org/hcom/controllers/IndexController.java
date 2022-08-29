@@ -19,6 +19,11 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping("/api")
+    public String swaggerApi() {
+        return "redirect:/swagger-ui/index.html";
+    }
+
     @GetMapping("/test")
     public String test() {
         return "/user/ajax_test";

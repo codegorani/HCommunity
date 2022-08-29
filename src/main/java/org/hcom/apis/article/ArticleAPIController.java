@@ -20,7 +20,7 @@ public class ArticleAPIController {
     @PostMapping("/api/v1/article")
     public Long articleSaveControl(@RequestBody ArticleSaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
         if (sessionUser == null) {
-            throw NotLoginUserException();
+            throw new NotLoginUserException();
         }
         return articleService.articleSaveService(requestDTO, sessionUser);
     }
