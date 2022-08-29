@@ -1,6 +1,7 @@
 package org.hcom.services.user.my;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.article.NoSuchArticleFoundException;
 import org.hcom.exception.user.NoSuchUserFoundException;
 import org.hcom.models.article.Article;
 import org.hcom.models.article.dtos.response.ArticleListResponseByUserDTO;
@@ -36,7 +37,7 @@ public class UserMyService {
         }
         Page<ArticleListResponseByUserDTO> result = articlePage.map(ArticleListResponseByUserDTO::new);
         for(ArticleListResponseByUserDTO dto : result) {
-            Article article = articleRepository.findById(dto.getIdx()).orElseThrow(IllegalArgumentException::new);
+            Article article = articleRepository.findById(dto.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
             dto.setAllReply(replyRepository.countAllByArticle(article));
             dto.setAllLike(likeRepository.countAllByArticle(article));
         }

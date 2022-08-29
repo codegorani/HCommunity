@@ -15,7 +15,6 @@ import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.models.user.enums.UserRole;
 import org.hcom.models.user.support.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -108,7 +107,7 @@ public class UserService implements UserDetailsService {
             throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
@@ -136,7 +135,7 @@ public class UserService implements UserDetailsService {
             throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
 
         User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
@@ -190,7 +189,7 @@ public class UserService implements UserDetailsService {
             userRepository.delete(user);
             httpSession.invalidate();
         } else {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
     }
 }

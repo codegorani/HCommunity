@@ -2,15 +2,14 @@ package org.hcom.apis.user.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUser;
+import org.hcom.exception.user.NoPermissionException;
 import org.hcom.models.common.ResponseResult;
-import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.admin.request.AdminModifyRequestDTO;
+import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserGradeRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.services.admin.AdminService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,7 +23,7 @@ public class AdminAPIController {
                                                                        @PathVariable("username") String username) {
         ResponseResult<UserInAppResponseDTO> result = ResponseResult.responseResult(adminService.userInAppModifyService(requestDTO, username, sessionUser));
         if (result == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException();
         }
         return result;
     }
@@ -39,7 +38,7 @@ public class AdminAPIController {
                                                                             @LoginUser SessionUser sessionUser, int point) {
         ResponseResult<UserInAppResponseDTO> result = ResponseResult.responseResult(adminService.userPointChangeService(username, sessionUser, point));
         if (result == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException();
         }
         return result;
     }

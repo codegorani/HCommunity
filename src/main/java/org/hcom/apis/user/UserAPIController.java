@@ -10,12 +10,7 @@ import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.services.user.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,7 +29,7 @@ public class UserAPIController {
         ResponseResult<UserInAppResponseDTO> result =
                 ResponseResult.responseResult(userService.userInAppResponseService(username, sessionUser));
         if(result == null) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
         return result;
     }
@@ -45,7 +40,7 @@ public class UserAPIController {
         ResponseResult<UserPersonalResponseDTO> result =
                 ResponseResult.responseResult(userService.userPersonalResponseService(username, sessionUser));
         if(result == null) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
         return result;
     }
@@ -62,7 +57,7 @@ public class UserAPIController {
         ResponseResult<UserPersonalResponseDTO> result =
                 ResponseResult.responseResult(userService.userPersonalModifyService(requestDTO, username, sessionUser));
         if(result == null) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
         return result;
     }

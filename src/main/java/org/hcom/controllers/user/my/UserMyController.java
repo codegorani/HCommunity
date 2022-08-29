@@ -6,13 +6,11 @@ import org.hcom.exception.user.NoPermissionException;
 import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.user.my.UserMyService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
 
 @RequiredArgsConstructor
 @Controller
@@ -26,7 +24,7 @@ public class UserMyController {
             throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
         model.addAttribute("sessionUser", sessionUser);
         return "user/my/my-page";
@@ -36,7 +34,7 @@ public class UserMyController {
     public String userMyArticlePage(@PathVariable("username") String username, @LoginUser SessionUser sessionUser, Model model,
                                     @RequestParam(required = false) String search, @RequestParam(required = false) Long page) {
         if(!username.equals(sessionUser.getUsername())) {
-            throw new NoPermissionException("NO PERMISSION");
+            throw new NoPermissionException();
         }
         int requestPage;
         if(page == null) {

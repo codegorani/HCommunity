@@ -1,17 +1,17 @@
 package org.hcom.services.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.user.NoSuchUserFoundException;
+import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.user.User;
-import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.admin.request.AdminModifyRequestDTO;
+import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserGradeRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.enums.UserRole;
 import org.hcom.models.user.support.UserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpSession;
 
@@ -25,7 +25,7 @@ public class AdminService {
     public UserInAppResponseDTO userInAppModifyService(AdminModifyRequestDTO requestDTO, String username, SessionUser sessionUser) {
         User user = userRepository.findByUsername(username).orElseThrow(IllegalAccessError::new);
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if(sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
             user.modifyByAdmin(requestDTO);
@@ -43,24 +43,24 @@ public class AdminService {
      */
     @Transactional
     public Long userDeleteService(String username, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
         if (sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if ((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
             userRepository.delete(user);
             return user.getIdx();
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NotLoginUserException();
         }
     }
 
     @Transactional
     public UserInAppResponseDTO userPointChangeService(String username, SessionUser sessionUser, int point) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
         if (sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if ((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
@@ -74,16 +74,16 @@ public class AdminService {
 
     @Transactional
     public Long userStatusChangeService(String username, SessionUser sessionUser, UserGradeRequestDTO requestDTO) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
         if (sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if ((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
             user.setUserGrade(requestDTO.getUserGrade());
             return userRepository.save(user).getIdx();
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NotLoginUserException();
         }
     }
 }

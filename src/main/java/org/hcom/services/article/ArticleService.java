@@ -1,6 +1,9 @@
 package org.hcom.services.article;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.article.NoSuchArticleFoundException;
+import org.hcom.exception.user.NoPermissionException;
+import org.hcom.exception.user.NoSuchUserFoundException;
 import org.hcom.models.article.Article;
 import org.hcom.models.article.dtos.request.ArticleSaveRequestDTO;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
@@ -16,10 +19,8 @@ import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.support.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -34,18 +35,18 @@ public class ArticleService {
 
     @Transactional
     public Long articleSaveService(ArticleSaveRequestDTO requestDTO, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         return articleRepository.save(requestDTO.toEntity(user)).getIdx();
     }
 
     @Transactional
     public ArticleDetailResponseDTO articleViewService(Long idx, SessionUser sessionUser) {
         User user = null;
-        Article article = articleRepository.findById(idx).orElseThrow(IllegalArgumentException::new);
+        Article article = articleRepository.findById(idx).orElseThrow(NoSuchArticleFoundException::new);
         List<Reply> replyList = replyRepository.findAllByArticle(article);
         ArticleDetailResponseDTO responseDTO = new ArticleDetailResponseDTO(article, replyList);
         if(sessionUser != null) {
-            user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
+            user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
             if(user != null) {
                 responseDTO.setIsLike(likeRepository.countAllByUserAndArticle(user, article));
             } else {
@@ -63,7 +64,7 @@ public class ArticleService {
         User user = null;
         Page<Article> articlePage;
         if(sessionUser != null) {
-            user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
+            user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         }
         PageRequest pageRequest = PageRequest.of(page, 10);
         if(search != null) {
@@ -73,7 +74,7 @@ public class ArticleService {
         }
         Page<ArticleListResponseDTO> result = articlePage.map(ArticleListResponseDTO::new);
         for(ArticleListResponseDTO dto : result) {
-            Article article = articleRepository.findById(dto.getIdx()).orElseThrow(IllegalArgumentException::new);
+            Article article = articleRepository.findById(dto.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
             if(user != null) {
                 dto.setIsLike(likeRepository.countAllByUserAndArticle(user, article));
             } else {
@@ -87,24 +88,24 @@ public class ArticleService {
 
     @Transactional
     public void articleLikeService(LikeDTO likeDTO, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
-        Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
+        Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
         likeRepository.save(Like.builder().user(user).article(article).build());
     }
 
     @Transactional
     public void articleDislikeService(LikeDTO likeDTO, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
-        Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
+        Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
         likeRepository.deleteByUserAndArticle(user, article);
     }
 
     @Transactional
     public void articleDeleteByArticleIdxService(Long articleIdx, SessionUser sessionUser) {
-        Article article = articleRepository.findById(articleIdx).orElseThrow(IllegalArgumentException::new);
-        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
+        Article article = articleRepository.findById(articleIdx).orElseThrow(NoSuchArticleFoundException::new);
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchArticleFoundException::new);
         if(!article.getUser().getIdx().equals(user.getIdx())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException();
         }
         likeRepository.deleteAllByArticle(article);
         replyRepository.deleteAllByArticle(article);
