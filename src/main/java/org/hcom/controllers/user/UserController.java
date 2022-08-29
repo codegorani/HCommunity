@@ -30,6 +30,7 @@ public class UserController {
         fineUrlList = new ArrayList<>();
         fineUrlList.add("http://localhost:8080/");
         fineUrlList.add("http://localhost:8080/article");
+        fineUrlList.add("http://localhost:8080/error");
     }
 
     @GetMapping("/login")
@@ -37,8 +38,12 @@ public class UserController {
         doInit();
         String referer = (String) request.getHeader("Referer");
         request.getSession().setAttribute("prevPage", referer);
+
         if(referer != null && !fineUrlList.contains(referer)) {
             model.addAttribute("is401", true);
+        }
+        if(referer.contains("http://localhost:8080/api")) {
+            return "index";
         }
         return "user/login";
     }

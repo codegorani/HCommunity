@@ -36,6 +36,7 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
 
         // authority
         http.authorizeRequests()
+//                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**").permitAll()
 //                .antMatchers("/api/v1/**")
 //                .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name(), UserRole.MANAGER.name(), UserRole.DEVELOPER.name())
                 .anyRequest().permitAll();

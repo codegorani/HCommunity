@@ -4,13 +4,14 @@
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
 <div th:replace="fragments/common :: header"></div>
+
+<div th:replace="layout/footer" th:remove="tag"></div>
+<div th:replace="fragments/common :: footer"></div>
 <script>
     $(document).ready(function() {
         alert('로그인 후 이용 가능합니다.');
         window.location.href = "/login";
     });
 </script>
-<div th:replace="layout/footer" th:remove="tag"></div>
-<div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

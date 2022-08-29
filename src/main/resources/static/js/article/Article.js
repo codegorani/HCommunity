@@ -51,7 +51,8 @@ const article = {
             alert('완료되었습니다.');
             location.href = '/article/view/' + data;
         }).fail(function (error) {
-            alert(JSON.stringify(error));
+            alert(JSON.stringify(error))
+            location.href = '/error/' + error.status;
         })
     },
     articleLike: function(idx) {
@@ -74,7 +75,8 @@ const article = {
                 alert('완료.');
                 location.reload();
             }).fail(function (error) {
-                alert(JSON.stringify(error));
+                alert(JSON.stringify(error))
+                location.href = '/error/' + error.status;
             });
         }
     },
@@ -98,7 +100,8 @@ const article = {
                 alert('완료.');
                 location.reload();
             }).fail(function (error) {
-                alert(JSON.stringify(error));
+                alert(JSON.stringify(error))
+                location.href = '/error/' + error.status;
             })
         }
     },
@@ -117,8 +120,9 @@ const article = {
         }).done(function () {
             location.reload();
         }).fail(function (error) {
-            alert(JSON.stringify(error));
-        })
+            alert(JSON.stringify(error))
+            location.href = '/error/' + error.status;
+        });
     },
     replyRemove: function(idx) {
         $.ajax({
@@ -128,7 +132,8 @@ const article = {
         }).done(function () {
             location.reload();
         }).fail(function (error) {
-            alert(JSON.stringify(error));
+            alert(JSON.stringify(error))
+            location.href = '/error/' + error.status;
         })
     },
     articleDelete: function(idx, page) {
@@ -144,7 +149,8 @@ const article = {
                 location.reload();
             }
         }).fail(function (error) {
-            alert(JSON.stringify(error));
+            alert(JSON.stringify(error))
+            location.href = '/error/' + error.status;
         })
     }
 }

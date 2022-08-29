@@ -36,6 +36,7 @@ const user = {
             window.location.href = "/"
         }).fail(function(error) {
             alert(JSON.stringify(error));
+            location.href = '/error/' + error.status;
         });
     },
 
@@ -63,11 +64,13 @@ const user = {
                         alert('구매 성공');
                     }
                 }).fail(function(error) {
-                    console.log(JSON.stringify(error))
+                    alert(JSON.stringify(error))
+                    location.href = '/error/' + error.status;
                 })
             }
         }).fail(function(error) {
-            console.log(JSON.stringify(error));
+            alert(JSON.stringify(error))
+            location.href = '/error/' + error.status;
         })
     }
 }

@@ -102,11 +102,15 @@ public class UserService implements UserDetailsService {
      * @return updated user's db index
      */
     public UserPersonalResponseDTO userPersonalModifyService(UserModifyRequestDTO requestDTO, String username, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalAccessError::new);
-
         if(sessionUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
         }
+        if(!username.equals(sessionUser.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+        }
+
+        User user = userRepository.findByUsername(username).orElseThrow(IllegalAccessError::new);
+
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
             user.modifyByUser(requestDTO);
@@ -126,11 +130,15 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public UserInAppResponseDTO userInAppResponseService(String username, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-
         if(sessionUser == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
         }
+        if(!username.equals(sessionUser.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+        }
+
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
             return new UserInAppResponseDTO(user);

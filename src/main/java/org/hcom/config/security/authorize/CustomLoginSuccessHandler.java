@@ -22,7 +22,11 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
             String redirectUrl = (String) session.getAttribute("prevPage");
             if (redirectUrl != null) {
                 session.removeAttribute("prevPage");
-                getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                if(redirectUrl.contains("/error/401")) {
+                    getRedirectStrategy().sendRedirect(request, response, "/");
+                } else {
+                    getRedirectStrategy().sendRedirect(request, response, redirectUrl);
+                }
             } else {
                 super.onAuthenticationSuccess(request, response, authentication);
             }
