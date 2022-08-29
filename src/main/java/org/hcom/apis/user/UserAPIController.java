@@ -2,6 +2,7 @@ package org.hcom.apis.user;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUser;
+import org.hcom.exception.user.NoPermissionException;
 import org.hcom.models.common.ResponseResult;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
@@ -33,7 +34,7 @@ public class UserAPIController {
         ResponseResult<UserInAppResponseDTO> result =
                 ResponseResult.responseResult(userService.userInAppResponseService(username, sessionUser));
         if(result == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
         return result;
     }
@@ -44,7 +45,7 @@ public class UserAPIController {
         ResponseResult<UserPersonalResponseDTO> result =
                 ResponseResult.responseResult(userService.userPersonalResponseService(username, sessionUser));
         if(result == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
         return result;
     }
@@ -61,7 +62,7 @@ public class UserAPIController {
         ResponseResult<UserPersonalResponseDTO> result =
                 ResponseResult.responseResult(userService.userPersonalModifyService(requestDTO, username, sessionUser));
         if(result == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
         return result;
     }

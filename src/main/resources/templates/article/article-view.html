@@ -45,7 +45,7 @@
             <td th:text="${reply.nickname}"></td>
             <td th:text="${reply.replyContent}"></td>
             <td th:text="${reply.createdDate}"></td>
-            <td th:if="${reply.nickname == article.nickname}"><a class="btn-reply-delete" th:data-idx="${reply.idx}">❌</a></td>
+            <td th:if="${sessionUser != null && reply.nickname == sessionUser.nickname}"><a class="btn-reply-delete" th:data-idx="${reply.idx}">❌</a></td>
         </tr>
         <tr>
             <td>

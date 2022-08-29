@@ -42,9 +42,7 @@ public class UserController {
         if(referer != null && !fineUrlList.contains(referer)) {
             model.addAttribute("is401", true);
         }
-        if(referer.contains("http://localhost:8080/api")) {
-            return "index";
-        }
+
         return "user/login";
     }
 

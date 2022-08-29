@@ -1,6 +1,7 @@
 package org.hcom.services.user.my;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.user.NoSuchUserFoundException;
 import org.hcom.models.article.Article;
 import org.hcom.models.article.dtos.response.ArticleListResponseByUserDTO;
 import org.hcom.models.article.support.ArticleRepository;
@@ -27,7 +28,7 @@ public class UserMyService {
     public Page<ArticleListResponseByUserDTO> getArticleListByUser(int page, SessionUser sessionUser, String search) {
         Page<Article> articlePage;
         PageRequest pageRequest = PageRequest.of(page, 10);
-        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         if(search != null) {
             articlePage = articleRepository.findAllByUserAndTitleContains(user, search, pageRequest);
         } else {

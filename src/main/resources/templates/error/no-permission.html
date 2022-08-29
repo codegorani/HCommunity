@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<div th:replace="layout/header" th:remove="tag"></div>
+<body>
+<div th:replace="fragments/common :: header"></div>
+
+<div th:replace="layout/footer" th:remove="tag"></div>
+<div th:replace="fragments/common :: footer"></div>
+<script>
+    $(document).ready(function() {
+        alert('접근 권한이 없습니다.');
+    });
+</script>
+</body>
+</html>

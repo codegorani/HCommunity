@@ -2,6 +2,8 @@ package org.hcom.controllers.user.my;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUser;
+import org.hcom.exception.user.NoPermissionException;
+import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.user.my.UserMyService;
 import org.springframework.http.HttpStatus;
@@ -21,10 +23,10 @@ public class UserMyController {
     @GetMapping("/my/{username}")
     public String userMyPage(@PathVariable("username") String username, @LoginUser SessionUser sessionUser, Model model) {
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
         model.addAttribute("sessionUser", sessionUser);
         return "user/my/my-page";
@@ -34,7 +36,7 @@ public class UserMyController {
     public String userMyArticlePage(@PathVariable("username") String username, @LoginUser SessionUser sessionUser, Model model,
                                     @RequestParam(required = false) String search, @RequestParam(required = false) Long page) {
         if(!username.equals(sessionUser.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
         int requestPage;
         if(page == null) {

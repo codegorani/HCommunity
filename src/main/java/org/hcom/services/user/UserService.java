@@ -1,6 +1,10 @@
 package org.hcom.services.user;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.user.LoginFailureException;
+import org.hcom.exception.user.NoPermissionException;
+import org.hcom.exception.user.NoSuchUserFoundException;
+import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.like.support.LikeRepository;
 import org.hcom.models.reply.support.ReplyRepository;
 import org.hcom.models.user.User;
@@ -46,12 +50,10 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username:" + username);
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(LoginFailureException::new);
         user.setLastLoginTime(LocalDateTime.now());
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getUserRole().getRole()));
-        System.out.println(user.getUserRole().getRole());
         httpSession.setAttribute("user", new SessionUser(user));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
@@ -79,10 +81,10 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public Long userPasswordResetService(String username, String password, SessionUser sessionUser) throws ResponseStatusException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
 
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
@@ -103,13 +105,13 @@ public class UserService implements UserDetailsService {
      */
     public UserPersonalResponseDTO userPersonalModifyService(UserModifyRequestDTO requestDTO, String username, SessionUser sessionUser) {
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
 
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalAccessError::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
 
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
@@ -131,13 +133,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserInAppResponseDTO userInAppResponseService(String username, SessionUser sessionUser) {
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if(!username.equals(sessionUser.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
 
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
 
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
@@ -156,10 +158,10 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public UserPersonalResponseDTO userPersonalResponseService(String username, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
 
         if(sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
@@ -176,10 +178,10 @@ public class UserService implements UserDetailsService {
      */
     @Transactional
     public void userDeleteService(String username, SessionUser sessionUser) {
-        User user = userRepository.findByUsername(username).orElseThrow(IllegalArgumentException::new);
+        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
 
         if (sessionUser == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "NOT LOGIN");
+            throw new NotLoginUserException();
         }
         if ((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
                 sessionUser.getUserRole().equals(UserRole.ADMIN) || sessionUser.getUserRole().equals(UserRole.DEVELOPER)) {
@@ -188,7 +190,7 @@ public class UserService implements UserDetailsService {
             userRepository.delete(user);
             httpSession.invalidate();
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "NO PERMISSION");
+            throw new NoPermissionException("NO PERMISSION");
         }
     }
 }

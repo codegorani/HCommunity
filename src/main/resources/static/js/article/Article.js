@@ -121,7 +121,10 @@ const article = {
             location.reload();
         }).fail(function (error) {
             alert(JSON.stringify(error))
-            location.href = '/error/' + error.status;
+            if(error.status === 401) {
+                alert('로그인이 필요합니다.')
+                location.href = '/login';
+            }
         });
     },
     replyRemove: function(idx) {
