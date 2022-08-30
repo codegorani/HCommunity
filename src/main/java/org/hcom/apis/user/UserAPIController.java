@@ -18,6 +18,16 @@ public class UserAPIController {
 
     private final UserService userService;
 
+    @PostMapping("/username/auth")
+    public String usernameAuthenticate(@RequestBody String username) {
+        return userService.usernameAuthService(username);
+    }
+
+    @PostMapping("/nickname/auth")
+    public String nicknameAuthenticate(@RequestBody String nickname) {
+        return userService.nicknameAuthService(nickname);
+    }
+
     @PostMapping("/signup")
     public Long userSignupAPIControl(@RequestBody UserSaveRequestDTO requestDTO) {
         return userService.userSaveService(requestDTO);

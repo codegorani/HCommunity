@@ -8,6 +8,7 @@
         <a role="button" class="btn btn-secondary" th:href="@{/my/article/{username}(username=${sessionUser.username})}">게시물관리</a>
         <a role="button" class="btn btn-secondary" th:href="@{/my/reply/{username}(username=${sessionUser.username})}">댓글관리</a>
         <a role="button" class="btn btn-secondary" th:href="@{/my/like/{username}(username=${sessionUser.username})}">좋아요관리</a>
+        <a role="button" class="btn btn-secondary" th:href="@{/my/info/{username}(username=${sessionUser.username})}">내정보</a>
     </div>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <div th:replace="fragments/common :: footer"></div>

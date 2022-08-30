@@ -192,4 +192,26 @@ public class UserService implements UserDetailsService {
             throw new NoPermissionException();
         }
     }
+
+    @Transactional
+    public String usernameAuthService(String username) {
+        String valid;
+        if(!userRepository.findByUsername(username).isPresent()) {
+            valid = "valid";
+        } else {
+            valid = "invalid";
+        }
+        return valid;
+    }
+
+    @Transactional
+    public String nicknameAuthService(String username) {
+        String valid;
+        if(!userRepository.findByNickname(username).isPresent()) {
+            valid = "valid";
+        } else {
+            valid = "invalid";
+        }
+        return valid;
+    }
 }

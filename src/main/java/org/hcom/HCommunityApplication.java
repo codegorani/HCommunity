@@ -18,14 +18,13 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-@EnableSwagger2
+//@EnableSwagger2
 @EnableBatchProcessing
 @MapperScan(basePackageClasses = HCommunityApplication.class)
 @RequiredArgsConstructor
