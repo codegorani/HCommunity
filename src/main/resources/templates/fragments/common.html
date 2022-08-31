@@ -17,8 +17,14 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarColor02">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item active" th:if="${sessionUser == null}">
+                    <a class="nav-link" th:href="@{/login}">로그인</a>
+                </li>
+                <li class="nav-item active" th:if="${sessionUser == null}">
+                    <a class="nav-link" th:href="@{/signup}">회원가입</a>
+                </li>
                 <li class="nav-item active" th:if="${sessionUser != null}">
-                    <a class="nav-link" th:href="@{/my/{username}(username=${sessionUser.username})}">내정보<span class="sr-only">(current)</span></a>
+                    <a class="nav-link" th:href="@{/my/{username}(username=${sessionUser.username})}">내정보</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/article}">게시판</a>

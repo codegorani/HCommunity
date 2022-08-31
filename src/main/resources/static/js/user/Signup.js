@@ -15,15 +15,13 @@ const signup = {
     init: function() {
         const _this = this;
 
-        $('#phoneNum').keyup(function (event) {
-            event = event || window.event;
+        $('#phoneNum').keyup(function () {
             let _val = this.value.trim();
             this.value = _this.numInput(_val);
             _this.phoneNumValidate();
         });
 
-        $('#telNum').keyup(function (event) {
-            event = event || window.event;
+        $('#telNum').keyup(function () {
             let _val = this.value.trim();
             this.value = _this.numInput(_val);
         });
@@ -73,14 +71,23 @@ const signup = {
         });
 
         $('#btn-username-auth').on('click', function() {
-            _this.usernameAuthenticate();
+            if(isUsernameValid) {
+                _this.usernameAuthenticate();
+            } else {
+                alert('아이디가 조건에 맞는지 확인하세요.');
+            }
         });
 
         $('#btn-nickname-auth').on('click', function() {
-            _this.nicknameAuthenticate();
+            if(isNicknameValid) {
+                _this.nicknameAuthenticate();
+            } else {
+                alert('닉네임이 조건에 맞는지 확인하세요.');
+            }
+
         });
 
-        $('#btn-user-save').on('click', function(e) {
+        $('#btn-user-save').on('click', function() {
             if((isUsernameValid && isNicknameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
             && isBirthValid && isFirstNameValid && isLastNameValid && isAddrValid) !== true) {
                 if(!isUsernameValid) {
@@ -138,10 +145,12 @@ const signup = {
         if (/^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/.test(data)) {
             $('#phoneNum-warning').css('display', 'none');
             $('#phoneNum-good').css('display', 'block');
+            $('#phoneNum').css('border', 'solid 2px limegreen');
             isPhoneNumValid = true;
         } else {
             $('#phoneNum-warning').css('display', 'block');
             $('#phoneNum-good').css('display', 'none');
+            $('#phoneNum').css('border', 'solid 2px red');
             isPhoneNumValid = false;
         }
    },
@@ -162,6 +171,8 @@ const signup = {
                     $('#btn-nickname-auth').attr('disabled', true);
                     $('#nickname').attr('readonly', true);
                     $('#nickname-auth').css('display', 'block');
+                    $('#nickname-good').css('display', 'none');
+                    $('#nickname').css('border', 'solid 2px limegreen');
                     isNicknameAuthenticated = true;
                 } else {
                     alert('이미 사용중인 닉네임 입니다.');
@@ -188,6 +199,8 @@ const signup = {
                     $('#btn-username-auth').attr('disabled', true);
                     $('#username').attr('readonly', true);
                     $('#username-auth').css('display', 'block');
+                    $('#username-good').css('display', 'none');
+                    $('#username').css('border', 'solid 2px limegreen');
                     isUsernameAuthenticated = true;
                 } else {
                     alert('이미 사용중인 아이디 입니다.');
@@ -223,10 +236,16 @@ const signup = {
             if($('#birth').val().length === 10) {
                 $('#birth-warn').css('display', 'none');
                 $('#birth-good').css('display', 'block');
+                $('#birth-year').css('border', 'solid 2px limegreen');
+                $('#birth-month').css('border', 'solid 2px limegreen');
+                $('#birth-day').css('border', 'solid 2px limegreen');
                 isBirthValid = true;
             } else {
                 $('#birth-warn').css('display', 'block');
                 $('#birth-good').css('display', 'none');
+                $('#birth-year').css('border', 'solid 2px red');
+                $('#birth-month').css('border', 'solid 2px red');
+                $('#birth-day').css('border', 'solid 2px red');
                 isBirthValid = false;
             }
         }
@@ -238,10 +257,12 @@ const signup = {
         const blank = /[\s]/g;
 
         if((special.test(nickname) || blank.test(nickname)) === false && nickname.length >= 2) {
+            $('#nickname').css('border', 'solid 2px orange');
             $('#nickname-good').css('display', 'block');
             $('#nickname-warning').css('display', 'none');
             isNicknameValid = true;
         } else {
+            $('#nickname').css('border', 'solid 2px red');
             $('#nickname-good').css('display', 'none');
             $('#nickname-warning').css('display', 'block');
             isNicknameValid = false;
@@ -254,10 +275,12 @@ const signup = {
         const usernamePattern = /^[a-zA-z0-9]{4,12}$/;
 
         if(usernamePattern.test(username)) {
+            $('#username').css('border', 'solid 2px orange');
             $('#username-good').css('display', 'block');
             $('#username-warning').css('display', 'none');
             isUsernameValid = true;
         } else {
+            $('#username').css('border', 'solid 2px red');
             $('#username-good').css('display', 'none');
             $('#username-warning').css('display', 'block');
             isUsernameValid = false;
@@ -270,10 +293,12 @@ const signup = {
         if (myPassword !== confirmPassword) {
             $('#password-warn').css('display', 'block');
             $('#password-confirm-good').css('display', 'none');
+            $('#password-confirm').css('border', 'solid 2px red');
             isConfirmPasswordValid = false;
         } else {
             $('#password-warn').css('display', 'none');
             $('#password-confirm-good').css('display', 'block');
+            $('#password-confirm').css('border', 'solid 2px limegreen');
             //$('#password').attr('readonly', true);
             isConfirmPasswordValid = true;
         }
@@ -282,31 +307,25 @@ const signup = {
     passwordValidate: function () {
         const password = $('#password').val();
 
-        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@!%*#?&]{8,}$/;
 
-        let isGoodPattern;
-        let isGoodLength;
+        let isGoodPattern = false;
 
-        if (passwordPattern.test(password)) {
-            $('#password-warning').css('display', 'none');
-            isGoodPattern = true;
-        } else {
+        if (!passwordPattern.test(password) || (password.length < 9 || password.length > 13)) {
             $('#password-warning').css('display', 'block');
             isGoodPattern = false;
-        }
-        if (password.length < 9 || password.length > 13) {
-            $('#password-length-warning').css('display', 'block');
-            isGoodLength = false;
         } else {
-            $('#password-length-warning').css('display', 'none');
-            isGoodLength = true;
+            $('#password-warning').css('display', 'none');
+            isGoodPattern = true;
         }
 
-        if (isGoodLength && isGoodPattern) {
+        if (isGoodPattern) {
             $('#password-good').css('display', 'block');
+            $('#password').css('border', 'solid 2px limegreen');
             isPasswordValid = true;
         } else {
             $('#password-good').css('display', 'none');
+            $('#password').css('border', 'solid 2px red');
             isPasswordValid = false;
         }
     },
@@ -316,10 +335,12 @@ const signup = {
         if (nameValue.length <= 1) {
             $('#firstName-warning').css('display', 'block');
             $('#firstName-good').css('display', 'none');
+            $('#firstName').css('border', 'solid 2px red');
             isFirstNameValid = false;
         } else {
             $('#firstName-warning').css('display', 'none');
             $('#firstName-good').css('display', 'block');
+            $('#firstName').css('border', 'solid 2px limegreen');
             isFirstNameValid = true;
         }
     },
@@ -329,10 +350,12 @@ const signup = {
         if (nameValue.length === 0) {
             $('#lastName-warning').css('display', 'block');
             $('#lastName-good').css('display', 'none');
+            $('#lastName').css('border', 'solid 2px red');
             isLastNameValid = false;
         } else {
             $('#lastName-warning').css('display', 'none');
             $('#lastName-good').css('display', 'block');
+            $('#lastName').css('border', 'solid 2px limegreen');
             isLastNameValid = true;
         }
     },
@@ -343,10 +366,12 @@ const signup = {
         if (!emailRegex.test(email)) {
             $('#email-warning').css('display', 'block');
             $('#email-good').css('display', 'none');
+            $('#email').css('border', 'solid 2px red');
             isEmailValid = false;
         } else {
             $('#email-warning').css('display', 'none');
             $('#email-good').css('display', 'block');
+            $('#email').css('border', 'solid 2px limegreen');
             isEmailValid = true;
         }
     },
@@ -440,6 +465,7 @@ const signup = {
             oncomplete: function(data) {
                 const roadAddr = data.roadAddress;
                 if(roadAddr.length > 0) {
+                    $('#address1').css('border', 'solid 2px limegreen')
                     isAddrValid = true;
                 }
                 $('#address1').val(roadAddr);

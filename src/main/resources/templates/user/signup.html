@@ -9,7 +9,7 @@
         <div class="col col-md-6">
             <form>
                 <div class="form-group">
-                    <label for="username">아이디</label>
+                    <label for="username">아이디<span style="color: red">*</span></label>
                     <div class="input-group">
                         <input type="text" id="username" name="username" class="form-control" placeholder="아이디를 입력하세요."/>
                         <span class="input-group-btn">
@@ -17,25 +17,24 @@
                         </span>
                     </div>
                     <p id="username-warning" style="display: none; color: red;">아이디는 영문, 숫자 포함 4~12자리로 생성해야합니다.</p>
-                    <p id="username-good" style="display: none; color: limegreen">OK.</p>
-                    <p id="username-auth" style="display: none; color: limegreen">사용 가능한 아이디입니다.</p>
+                    <p id="username-good" style="display: none; color: orange">아이디 중복체크를 진행해주세요.</p>
+                    <p id="username-auth" style="display: none; color: limegreen">OK.</p>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">패스워드</label>
+                    <label for="password">패스워드<span style="color: red">*</span></label>
                     <input type="password" name="password" id="password" class="form-control"/>
-                    <p id="password-length-warning" style="display: none; color: red;">패스워드는 8~13자리여야 합니다.</p>
-                    <p id="password-warning" style="display: none; color: red;">패스워드는 최소 한 가지 이상의 문자와 숫자 특수문자가 들어가야 합니다.</p>
+                    <p id="password-warning" style="display: none; color: red;">패스워드는 8~13자리로 최소 한 가지 이상의 문자와 숫자 특수문자가 들어가야 합니다.</p>
                     <p id="password-good" style="display: none; color: limegreen">OK.</p>
                 </div>
                 <div class="form-group">
-                    <label for="password-confirm">패스워드 확인</label>
+                    <label for="password-confirm">패스워드 확인<span style="color: red">*</span></label>
                     <input type="password" id="password-confirm" class="form-control"/>
                     <p id="password-warn" style="display: none; color: red;">패스워드가 일치하지 않습니다.</p>
                     <p id="password-confirm-good" style="display: none; color: limegreen">OK.</p>
                 </div>
                 <div class="form-group">
-                    <label for="nickname">닉네임 (닉네임은 이후 변경 가능합니다.)</label>
+                    <label for="nickname">닉네임<span style="color: red">*</span> (닉네임은 이후 변경 가능합니다.)</label>
                     <div class="input-group">
                         <input type="text" id="nickname" name="nickname" class="form-control" placeholder="사용하실 닉네임를 입력하세요."/>
                         <span class="input-group-btn">
@@ -43,30 +42,30 @@
                         </span>
                     </div>
                     <p id="nickname-warning" style="display: none; color: red;">닉네임은 특수문자와 공백을 포함해선 안되며 2자리 이상으로 생성해야합니다.</p>
-                    <p id="nickname-good" style="display: none; color: limegreen">OK.</p>
-                    <p id="nickname-auth" style="display: none; color: limegreen">사용 가능한 닉네임입니다.</p>
+                    <p id="nickname-good" style="display: none; color: orange">아이디 중복체크를 진행해주세요.</p>
+                    <p id="nickname-auth" style="display: none; color: limegreen">OK.</p>
                 </div>
 
                 <div class="form-group">
-                    <label for="lastName">성</label>
+                    <label for="lastName">성<span style="color: red">*</span></label>
                     <input type="text" name="lastName" id="lastName" class="form-control" placeholder="성을 입력하세요."/>
                     <p id="lastName-warning" style="display: none; color: red">이 항목은 필수입니다.</p>
                     <p id="lastName-good" style="display: none; color: limegreen">OK.</p>
                 </div>
                 <div class="form-group">
-                    <label for="firstName">이름</label>
+                    <label for="firstName">이름<span style="color: red">*</span></label>
                     <input type="text" name="firstName" id="firstName" class="form-control" placeholder="이름을 입력하세요."/>
                     <p id="firstName-warning" style="display: none; color: red">이 항목은 필수입니다.</p>
                     <p id="firstName-good" style="display: none; color: limegreen">OK.</p>
                 </div>
                 <div class="form-group">
-                    <label for="email">이메일</label>
+                    <label for="email">이메일<span style="color: red">*</span></label>
                     <input type="email" name="email" id="email" class="form-control" placeholder="이메일을 입력하세요."/>
                     <p id="email-warning" style="display: none; color: red;">이메일 형식이 올바르지 않습니다.</p>
                     <p id="email-good" style="display: none; color: limegreen">OK.</p>
                 </div>
                 <div class="form-group">
-                    <label for="phoneNum">휴대폰번호</label>
+                    <label for="phoneNum">휴대폰번호<span style="color: red">*</span></label>
                     <input
                             type="tel"
                             class="form-control m-input"
@@ -93,7 +92,7 @@
                     />
                 </div>
                 <div class="form-group">
-                    <label for="birth">생년월일</label><br/>
+                    <label for="birth">생년월일<span style="color: red">*</span></label><br/>
                     <label for="birth-year">출생년도</label>
                     <select id="birth-year" class="form-select form-control">
                         <option value="none" selected>--선택--</option>
@@ -117,7 +116,7 @@
                     <input type="hidden" name="birth" id="birth" class="form-control"/>
                 </div>
                 <div class="form-group">
-                    <label for="address1">주소</label>
+                    <label for="address1">주소<span style="color: red">*</span></label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="address1" name="address1" placeholder="주소를 찾아주세요"readonly/>
                         <span class="input-group-btn">
