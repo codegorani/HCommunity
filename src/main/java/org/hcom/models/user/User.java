@@ -106,6 +106,28 @@ public class User extends BaseTimeEntity {
         this.password = newPassword;
     }
 
+    public void modifyUserPoint(int point) {
+        this.userPoint += point;
+
+        if (this.userPoint < 2000) {
+            this.userGrade = UserGrade.BRONZE;
+        } else if(this.userPoint < 8000) {
+            this.userGrade = UserGrade.SILVER;
+        } else if(this.userPoint < 20000) {
+            this.userGrade = UserGrade.GOLD;
+        } else if(this.userPoint < 35000) {
+            this.userGrade = UserGrade.PLATINUM;
+        } else if(this.userPoint < 69000) {
+            this.userGrade = UserGrade.DIAMOND;
+        } else if(this.userPoint < 125000) {
+            this.userGrade = UserGrade.MASTER;
+        } else if(this.userPoint < 235000) {
+            this.userGrade = UserGrade.GRANDMASTER;
+        } else {
+            this.userGrade = UserGrade.CHALLENGER;
+        }
+    }
+
     // modify personal data
     public void modifyByUser(UserModifyRequestDTO requestDTO) {
         this.lastName = requestDTO.getLastName();

@@ -29,6 +29,14 @@ public class ReplyService {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         Article article = articleRepository.findById(requestDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
         replyRepository.save(requestDTO.toEntity(article, user));
+        User writer = article.getUser();
+        if(!writer.getNickname().equals(user.getNickname())) {
+            writer.modifyUserPoint(15);
+        }
+        user.modifyUserPoint(15);
+        user.setTotalReplyCount(user.getTotalReplyCount() + 1);
+        userRepository.save(user);
+        userRepository.save(writer);
     }
 
     @Transactional
@@ -38,6 +46,14 @@ public class ReplyService {
         if (!reply.getUser().getIdx().equals(user.getIdx())) {
             throw new NoPermissionException();
         }
+        User writer = reply.getArticle().getUser();
+        if(!writer.getNickname().equals(user.getNickname())) {
+            writer.modifyUserPoint(-15);
+        }
+        user.modifyUserPoint(-15);
+        user.setTotalReplyCount(user.getTotalReplyCount() - 1);
+        userRepository.save(user);
+        userRepository.save(writer);
         replyRepository.delete(reply);
     }
 }

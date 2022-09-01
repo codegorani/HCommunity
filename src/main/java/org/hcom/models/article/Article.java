@@ -24,6 +24,6 @@ public class Article extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String contents;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 }

@@ -2,8 +2,6 @@ package org.hcom.models.user.dtos.response;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hcom.models.article.Article;
-import org.hcom.models.reply.Reply;
 import org.hcom.models.user.User;
 import org.hcom.models.user.enums.UserGrade;
 import org.hcom.models.user.enums.UserRole;
@@ -23,8 +21,6 @@ public class UserInAppResponseDTO {
     private final LocalDateTime lastLoginTime;
     private final int totalArticleCount;
     private final int totalReplyCount;
-    private List<Article> articleList;
-    private List<Reply> replyList;
 
     public UserInAppResponseDTO(User user) {
         this.nickname = user.getNickname();
@@ -35,7 +31,5 @@ public class UserInAppResponseDTO {
         this.lastLoginTime = user.getLastLoginTime();
         this.totalArticleCount = user.getTotalArticleCount();
         this.totalReplyCount = user.getTotalReplyCount();
-        this.articleList = user.getArticleList();
-        this.replyList = null;
     }
 }

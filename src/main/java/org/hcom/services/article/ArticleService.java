@@ -36,6 +36,9 @@ public class ArticleService {
     @Transactional
     public Long articleSaveService(ArticleSaveRequestDTO requestDTO, SessionUser sessionUser) {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
+        user.modifyUserPoint(1000);
+        user.setTotalArticleCount(user.getTotalArticleCount() + 1);
+        userRepository.save(user);
         return articleRepository.save(requestDTO.toEntity(user)).getIdx();
     }
 
@@ -91,6 +94,11 @@ public class ArticleService {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
         likeRepository.save(Like.builder().user(user).article(article).build());
+        User writer = article.getUser();
+        if(!writer.getNickname().equals(user.getNickname())) {
+            writer.modifyUserPoint(30);
+        }
+        userRepository.save(writer);
     }
 
     @Transactional
@@ -98,6 +106,11 @@ public class ArticleService {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
         likeRepository.deleteByUserAndArticle(user, article);
+        User writer = article.getUser();
+        if(!writer.getNickname().equals(user.getNickname())) {
+            writer.modifyUserPoint(-30);
+        }
+        userRepository.save(writer);
     }
 
     @Transactional
@@ -107,6 +120,9 @@ public class ArticleService {
         if(!article.getUser().getIdx().equals(user.getIdx())) {
             throw new NoPermissionException();
         }
+        user.modifyUserPoint(-900);
+        user.setTotalArticleCount(user.getTotalArticleCount() - 1);
+        userRepository.save(user);
         likeRepository.deleteAllByArticle(article);
         replyRepository.deleteAllByArticle(article);
         articleRepository.delete(article);

@@ -50,6 +50,10 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username).orElseThrow(LoginFailureException::new);
+        if(!(user.getLastLoginTime().getYear() == LocalDateTime.now().getYear()) &&
+        !(user.getLastLoginTime().getDayOfYear() == LocalDateTime.now().getDayOfYear())) {
+            user.modifyUserPoint(20);
+        }
         user.setLastLoginTime(LocalDateTime.now());
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getUserRole().getRole()));
@@ -196,7 +200,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String usernameAuthService(String username) {
         String valid;
-        if(!userRepository.findByUsername(username).isPresent()) {
+        if(userRepository.findByUsername(username).isEmpty()) {
             valid = "valid";
         } else {
             valid = "invalid";
@@ -207,7 +211,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public String nicknameAuthService(String username) {
         String valid;
-        if(!userRepository.findByNickname(username).isPresent()) {
+        if(userRepository.findByNickname(username).isEmpty()) {
             valid = "valid";
         } else {
             valid = "invalid";

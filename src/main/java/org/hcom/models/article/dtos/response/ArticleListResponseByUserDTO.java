@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 public class ArticleListResponseByUserDTO {
     private Long idx;
     private String title;
+    private String contents;
     private String createdDate;
     private Long allReply;
     private Long allLike;
@@ -20,6 +21,7 @@ public class ArticleListResponseByUserDTO {
     public ArticleListResponseByUserDTO(Article article) {
         this.idx = article.getIdx();
         this.title = article.getTitle();
+        this.contents = article.getContents();
         this.createdDate = article.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
