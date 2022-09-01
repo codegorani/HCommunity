@@ -8,6 +8,7 @@ import org.hcom.models.like.dtos.request.LikeDTO;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class ArticleAPIController {
     private final ArticleService articleService;
 
     @PostMapping("/api/v1/article")
-    public Long articleSaveControl(@RequestBody ArticleSaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
+    public Long articleSaveControl(@Validated @RequestBody ArticleSaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
         if (sessionUser == null) {
             throw new NotLoginUserException();
         }

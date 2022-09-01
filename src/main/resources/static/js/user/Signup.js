@@ -8,12 +8,17 @@ let isLastNameValid = false;
 let isFirstNameValid = false;
 let isAddrValid = false;
 let isPhoneNumValid = false;
+let isTelNumValid = true;
 let isUsernameAuthenticated = false;
 let isNicknameAuthenticated = false;
 
 const signup = {
     init: function() {
         const _this = this;
+
+        $('#address2').on('keyup', function() {
+            $('#address2').css('border', 'solid 2px limegreen')
+        })
 
         $('#phoneNum').keyup(function () {
             let _val = this.value.trim();
@@ -24,6 +29,7 @@ const signup = {
         $('#telNum').keyup(function () {
             let _val = this.value.trim();
             this.value = _this.numInput(_val);
+            _this.telNumValidate();
         });
 
         $('#btn-search-addr').on('click', function() {
@@ -44,6 +50,7 @@ const signup = {
 
         $('#password').on('keyup', function () {
             _this.passwordValidate();
+            _this.passwordEqual();
         });
 
         $('#password-confirm').on('keyup', function () {
@@ -89,7 +96,7 @@ const signup = {
 
         $('#btn-user-save').on('click', function() {
             if((isUsernameValid && isNicknameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid
-            && isBirthValid && isFirstNameValid && isLastNameValid && isAddrValid) !== true) {
+            && isBirthValid && isFirstNameValid && isLastNameValid && isAddrValid && isPhoneNumValid && isTelNumValid) !== true) {
                 if(!isUsernameValid) {
                     _this.usernameValidate();
                     $('#username').focus();
@@ -116,6 +123,9 @@ const signup = {
                 } else if(!isPhoneNumValid) {
                     _this.phoneNumValidate();
                     $('#phoneNum').focus();
+                } else if(!isTelNumValid) {
+                    _this.telNumValidate();
+                    $('#telNum').focus();
                 } else if(!isNicknameValid) {
                     _this.nicknameValidate()
                     $('#nickname').focus();
@@ -139,6 +149,22 @@ const signup = {
         });
     },
 
+    telNumValidate: function() {
+        const data = $('#telNum').val();
+
+        if (/^$|^[0-9]{2,3}-[0-9]{3,4}-[0-9]{4}/.test(data)) {
+            $('#telNum-warning').css('display', 'none');
+            $('#telNum-good').css('display', 'block');
+            $('#telNum').css('border', 'solid 2px limegreen');
+            isTelNumValid = true;
+        } else {
+            $('#telNum-warning').css('display', 'block');
+            $('#telNum-good').css('display', 'none');
+            $('#telNum').css('border', 'solid 2px red');
+            isTelNumValid = false;
+        }
+    },
+
     phoneNumValidate: function() {
         const data = $('#phoneNum').val();
 
@@ -160,7 +186,7 @@ const signup = {
         const data = $('#nickname').val();
 
         $.ajax({
-            url: '/nickname/auth',
+            url: '/signup/nickname/auth',
             method: 'POST',
             data: data,
             dataType: 'text',
@@ -188,7 +214,7 @@ const signup = {
         const data = $('#username').val();
 
         $.ajax({
-            url: '/username/auth',
+            url: '/signup/username/auth',
             method: 'POST',
             data: data,
             dataType: 'text',
@@ -219,10 +245,16 @@ const signup = {
         if (birthYear === 'none' || birthMonth === 'none' || birthDay === 'none') {
             $('#birth-warn').css('display', 'block');
             $('#birth-good').css('display', 'none');
+            $('#birth-year').css('border', 'solid 2px red');
+            $('#birth-month').css('border', 'solid 2px red');
+            $('#birth-day').css('border', 'solid 2px red');
             isBirthValid = false;
         } else {
             $('#birth-warn').css('display', 'none');
             $('#birth-good').css('display', 'block');
+            $('#birth-year').css('border', 'solid 2px limegreen');
+            $('#birth-month').css('border', 'solid 2px limegreen');
+            $('#birth-day').css('border', 'solid 2px limegreen');
             let strBirthDay = birthDay
             let strBirthMonth = birthMonth
             if (parseInt(birthDay) < 10) {

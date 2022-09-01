@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
+@Entity(name = "h_article")
 public class Article extends BaseTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,6 +6,7 @@ import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.reply.dtos.request.ReplySaveRequestDTO;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.reply.ReplyService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class ReplyAPIController {
     private final ReplyService replyService;
 
     @PostMapping("/api/v1/reply")
-    public void replySaveControl(@RequestBody ReplySaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
+    public void replySaveControl(@Validated @RequestBody ReplySaveRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
         if(sessionUser == null) {
             throw new NotLoginUserException();
         }

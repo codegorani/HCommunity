@@ -43,10 +43,10 @@ public class BatchJobConfiguration {
                 .build();
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public JpaPagingItemReader<User> inactiveUserReader(@Value("${batch.parameter.nowDate}") String nowDate) {
         JpaPagingItemReader<User> jpaPagingItemReader = new JpaPagingItemReader<>();
-        String sql = "SELECT u FROM User u " +
+        String sql = "SELECT u FROM h_user u " +
                 "WHERE u.lastLoginTime < :lastLoginTime " +
                 "AND u.userStatus = :userStatus";
         Map<String, Object> map = new HashMap<>();
