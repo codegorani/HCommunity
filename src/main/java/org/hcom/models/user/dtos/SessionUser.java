@@ -9,6 +9,7 @@ import org.hcom.models.user.enums.UserStatus;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class SessionUser implements Serializable {
@@ -28,7 +29,7 @@ public class SessionUser implements Serializable {
     private final int userPoint;
     private final int totalArticleCount;
     private final int totalReplyCount;
-    private final List<User> blockUserList;
+    private final List<String> blockUserList;
     private final LocalDateTime lastLoginTime;
     private final UserGrade userGrade;
     private final UserStatus userStatus;
@@ -53,7 +54,7 @@ public class SessionUser implements Serializable {
         this.userPoint = user.getUserPoint();
         this.totalArticleCount = user.getTotalArticleCount();
         this.totalReplyCount = user.getTotalReplyCount();
-        this.blockUserList = user.getBlockUserList();
+        this.blockUserList = user.getBlockUserList().stream().map(User::getNickname).collect(Collectors.toList());
         this.lastLoginTime = user.getLastLoginTime();
         this.userGrade = user.getUserGrade();
         this.userStatus = user.getUserStatus();

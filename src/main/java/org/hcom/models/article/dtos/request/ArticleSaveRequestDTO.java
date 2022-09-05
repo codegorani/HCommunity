@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hcom.models.article.Article;
+import org.hcom.models.article.enums.ArticleType;
+import org.hcom.models.gallery.Gallery;
 import org.hcom.models.user.User;
 
 import javax.validation.constraints.NotBlank;
@@ -21,10 +23,14 @@ public class ArticleSaveRequestDTO {
     @NotBlank(message = "CONTENTS_IS_MANDATORY")
     private String contents;
 
+    @NotBlank(message = "GALLERY_IS_MANDATORY")
+    private String galleryName;
+
     public Article toEntity(User user) {
         return Article.builder()
                 .title(title)
                 .contents(contents)
+                .articleType(ArticleType.NORMAL)
                 .user(user)
                 .build();
     }

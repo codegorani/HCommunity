@@ -24,6 +24,7 @@ public class ArticleDetailResponseDTO {
     private Long allLike;
     private Long isLike;
     private int allReply;
+    private String galleryName;
 
     public ArticleDetailResponseDTO(Article article, List<Reply> replyList) {
         this.idx = article.getIdx();
@@ -33,5 +34,6 @@ public class ArticleDetailResponseDTO {
         this.createdDate = article.getCreatedDate();
         this.replyList = replyList.stream().map(ReplyResponseDTO::new).collect(Collectors.toList());
         this.allReply = replyList.size();
+        this.galleryName = article.getGallery().getGalleryName();
     }
 }

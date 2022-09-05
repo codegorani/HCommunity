@@ -1,6 +1,8 @@
 package org.hcom;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.models.gallery.dtos.GallerySaveRequestDTO;
+import org.hcom.models.gallery.support.GalleryRepository;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
 import org.hcom.models.user.support.UserRepository;
@@ -19,6 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,7 @@ public class HCommunityApplication implements CommandLineRunner {
 
     private final ResourceLoader resourceLoader;
     private final UserRepository userRepository;
+    private final GalleryRepository galleryRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(HCommunityApplication.class, args);
@@ -43,6 +47,14 @@ public class HCommunityApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         List<User> userList = makeTempUser(2);
         userRepository.saveAll(userList);
+        GallerySaveRequestDTO requestDTO1 = new GallerySaveRequestDTO();
+        requestDTO1.setGalleryName("baseballKor");
+        requestDTO1.setGalleryKorName("국내야구");
+        GallerySaveRequestDTO requestDTO2 = new GallerySaveRequestDTO();
+        requestDTO2.setGalleryName("baseballOth");
+        requestDTO2.setGalleryKorName("해외야구");
+        galleryRepository.save(requestDTO1.toEntity());
+        galleryRepository.save(requestDTO2.toEntity());
 //        doSeleniumTest();
     }
 

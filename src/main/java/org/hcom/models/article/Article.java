@@ -1,7 +1,9 @@
 package org.hcom.models.article;
 
 import lombok.*;
+import org.hcom.models.article.enums.ArticleType;
 import org.hcom.models.common.BaseTimeEntity;
+import org.hcom.models.gallery.Gallery;
 import org.hcom.models.user.User;
 
 import javax.persistence.*;
@@ -26,4 +28,11 @@ public class Article extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ArticleType articleType;
+
+    @ManyToOne
+    private Gallery gallery;
 }

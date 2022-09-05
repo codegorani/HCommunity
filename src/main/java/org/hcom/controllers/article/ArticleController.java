@@ -3,9 +3,11 @@ package org.hcom.controllers.article;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.hcom.config.security.authorize.LoginUser;
+import org.hcom.config.security.custom.GalleryList;
 import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
+import org.hcom.models.gallery.Gallery;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -34,11 +37,12 @@ public class ArticleController {
     @Value("${image.upload.path}")
     private String uploadPath;
 
-    @GetMapping("/article/new")
-    public String articleNew(@LoginUser SessionUser sessionUser) {
+    @GetMapping("/{galleryName}gall/new")
+    public String articleNew(@LoginUser SessionUser sessionUser, @PathVariable("galleryName") String galleryName, Model model) {
         if (sessionUser == null) {
             throw new NotLoginUserException();
         }
+        model.addAttribute("galleryName", galleryName);
         return "article/article_new";
     }
 
@@ -103,8 +107,8 @@ public class ArticleController {
         return "article/article-view";
     }
 
-    @GetMapping("/article")
-    public String viewArticleMain(Model model, @LoginUser SessionUser sessionUser,
+    @GetMapping("/article/{gallery}gall")
+    public String viewGalleryMain(Model model, @LoginUser SessionUser sessionUser, @PathVariable("gallery") String galleryName,
                                   @RequestParam(required = false) String search, @RequestParam(required = false) Long page) {
         int requestPage;
         if(page == null) {
@@ -112,9 +116,15 @@ public class ArticleController {
         } else {
             requestPage = (int) (page - 1);
         }
-        Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(requestPage, sessionUser, search);
+        Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(requestPage, galleryName, sessionUser, search);
         model.addAttribute("articleList", articlePage);
         model.addAttribute("sessionUser", sessionUser);
+        model.addAttribute("galleryName", galleryName);
+        return "article/gallery/gallery-main";
+    }
+
+    @GetMapping("/article")
+    public String viewArticleMain() {
         return "article/article-main";
     }
 }

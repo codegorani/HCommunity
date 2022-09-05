@@ -24,10 +24,14 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final org.hcom.models.common.QBaseTimeEntity _super = new org.hcom.models.common.QBaseTimeEntity(this);
 
+    public final EnumPath<org.hcom.models.article.enums.ArticleType> articleType = createEnum("articleType", org.hcom.models.article.enums.ArticleType.class);
+
     public final StringPath contents = createString("contents");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
+    public final org.hcom.models.gallery.QGallery gallery;
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
@@ -56,6 +60,7 @@ public class QArticle extends EntityPathBase<Article> {
 
     public QArticle(Class<? extends Article> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.gallery = inits.isInitialized("gallery") ? new org.hcom.models.gallery.QGallery(forProperty("gallery")) : null;
         this.user = inits.isInitialized("user") ? new org.hcom.models.user.QUser(forProperty("user")) : null;
     }
 

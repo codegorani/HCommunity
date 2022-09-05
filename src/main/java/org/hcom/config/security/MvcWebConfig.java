@@ -2,6 +2,7 @@ package org.hcom.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.config.security.authorize.LoginUserArgumentResolver;
+import org.hcom.config.security.custom.GalleryListArgumentResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -16,6 +17,7 @@ import java.util.List;
 public class MvcWebConfig implements WebMvcConfigurer {
 
     private final LoginUserArgumentResolver loginUserArgumentResolver;
+    private final GalleryListArgumentResolver galleryListArgumentResolver;
 
     @Value("${resource.handler}")
     private String resourceHandler;
@@ -32,6 +34,7 @@ public class MvcWebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(loginUserArgumentResolver);
+        resolvers.add(galleryListArgumentResolver);
     }
 
     @Override

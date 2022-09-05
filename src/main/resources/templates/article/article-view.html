@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td>
-                <a role="button" class="btn btn-secondary" th:href="@{/article}">목록으로</a>
+                <a role="button" class="btn btn-secondary" th:href="@{/article/{gallery}gall(gallery=${article.galleryName})}">목록으로</a>
             </td>
             <td>
                 <button th:if="${sessionUser != null && article.nickname == sessionUser.nickname}" data-page="all" th:data-idx="${article.idx}" class="btn btn-danger btn-article-delete" role="button">게시글삭제</button>

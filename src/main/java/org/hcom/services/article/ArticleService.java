@@ -2,6 +2,7 @@ package org.hcom.services.article;
 
 import lombok.RequiredArgsConstructor;
 import org.hcom.exception.article.NoSuchArticleFoundException;
+import org.hcom.exception.gallery.NoSuchGalleryFoundException;
 import org.hcom.exception.user.NoPermissionException;
 import org.hcom.exception.user.NoSuchUserFoundException;
 import org.hcom.models.article.Article;
@@ -9,6 +10,8 @@ import org.hcom.models.article.dtos.request.ArticleSaveRequestDTO;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
 import org.hcom.models.article.support.ArticleRepository;
+import org.hcom.models.gallery.Gallery;
+import org.hcom.models.gallery.support.GalleryRepository;
 import org.hcom.models.like.Like;
 import org.hcom.models.like.dtos.request.LikeDTO;
 import org.hcom.models.like.support.LikeRepository;
@@ -32,6 +35,7 @@ public class ArticleService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final ReplyRepository replyRepository;
+    private final GalleryRepository galleryRepository;
 
     @Transactional
     public Long articleSaveService(ArticleSaveRequestDTO requestDTO, SessionUser sessionUser) {
@@ -39,7 +43,10 @@ public class ArticleService {
         user.modifyUserPoint(1000);
         user.setTotalArticleCount(user.getTotalArticleCount() + 1);
         userRepository.save(user);
-        return articleRepository.save(requestDTO.toEntity(user)).getIdx();
+        Article article = requestDTO.toEntity(user);
+        Gallery gallery = galleryRepository.findByGalleryName(requestDTO.getGalleryName()).orElseThrow(() -> new NoSuchGalleryFoundException(requestDTO.getGalleryName()));
+        article.setGallery(gallery);
+        return articleRepository.save(article).getIdx();
     }
 
     @Transactional
@@ -63,17 +70,18 @@ public class ArticleService {
     }
 
     @Transactional
-    public Page<ArticleListResponseDTO> getArticleListAsPage(int page, SessionUser sessionUser, String search) {
+    public Page<ArticleListResponseDTO> getArticleListAsPage(int page, String galleryName, SessionUser sessionUser, String search) {
         User user = null;
         Page<Article> articlePage;
+        Gallery gallery = galleryRepository.findByGalleryName(galleryName).orElseThrow(() -> new NoSuchGalleryFoundException(galleryName));
         if(sessionUser != null) {
             user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         }
         PageRequest pageRequest = PageRequest.of(page, 10);
         if(search != null) {
-            articlePage = articleRepository.findAllByTitleContains(search, pageRequest);
+            articlePage = articleRepository.findAllByTitleContainsAndGallery(search, gallery, pageRequest);
         } else {
-            articlePage = articleRepository.findAll(pageRequest);
+            articlePage = articleRepository.findAllByGallery(gallery, pageRequest);
         }
         Page<ArticleListResponseDTO> result = articlePage.map(ArticleListResponseDTO::new);
         for(ArticleListResponseDTO dto : result) {
@@ -126,5 +134,10 @@ public class ArticleService {
         likeRepository.deleteAllByArticle(article);
         replyRepository.deleteAllByArticle(article);
         articleRepository.delete(article);
+    }
+
+    @Transactional
+    public List<Gallery> getGalleryList() {
+        return galleryRepository.findAll();
     }
 }

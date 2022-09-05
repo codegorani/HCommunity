@@ -38,7 +38,8 @@ const article = {
     articleSave: function () {
         const data = {
             title: $('#title').val(),
-            contents: CKEDITOR.instances['contents'].getData()
+            contents: CKEDITOR.instances['contents'].getData(),
+            galleryName: $('#galleryName').val()
         };
 
         $.ajax({
