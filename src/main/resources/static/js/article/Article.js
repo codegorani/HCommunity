@@ -33,7 +33,7 @@ const article = {
                 const page = $(this).data('page');
                 _this.articleDelete(idx, page);
             }
-        })
+        });
     },
     articleSave: function () {
         const data = {
@@ -49,6 +49,7 @@ const article = {
             dataType: 'text',
             data: JSON.stringify(data)
         }).done(function (data) {
+            $(window).unbind('beforeunload');
             alert('완료되었습니다.');
             location.href = '/article/view/' + data;
         }).fail(function (error) {

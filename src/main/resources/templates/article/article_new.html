@@ -5,6 +5,7 @@
 <body>
 <div th:replace="fragments/common :: header"></div>
 <script th:src="@{/js/article/ckeditor/ckeditor.js}"></script>
+<p class="alert alert-primary" th:text="${gallery.galleryKorName + '갤러리'}"></p>
 <form>
     <div class="form-group">
         <label for="title">제목</label>
@@ -22,11 +23,19 @@
         };
         CKEDITOR.replace("contents", ckeditor_config);
     </script>
-    <input type="hidden" id="galleryName" th:value="${galleryName}"/>
+    <input type="hidden" id="galleryName" th:value="${gallery.galleryName}"/>
 </form>
 <button class="btn btn-primary" id="btn-article-save">저장</button>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <script th:src="@{/js/article/Article.js}"></script>
+<script>
+    $(window).bind('beforeunload', function() {
+        const isChanged = $('#title').innerText !== '' || $('#contents').innerText !== '';
+        if(isChanged) {
+            return "페이지에서 나가면 변경사항이 저장되지 않습니다. 계속하시겠습니까?";
+        }
+    });
+</script>
 <div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

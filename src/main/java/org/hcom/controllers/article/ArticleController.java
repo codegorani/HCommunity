@@ -8,6 +8,7 @@ import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
 import org.hcom.models.gallery.Gallery;
+import org.hcom.models.gallery.dtos.GalleryResponseDTO;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,12 +38,13 @@ public class ArticleController {
     @Value("${image.upload.path}")
     private String uploadPath;
 
-    @GetMapping("/{galleryName}gall/new")
+    @GetMapping("/article/{galleryName}gall/new")
     public String articleNew(@LoginUser SessionUser sessionUser, @PathVariable("galleryName") String galleryName, Model model) {
         if (sessionUser == null) {
             throw new NotLoginUserException();
         }
-        model.addAttribute("galleryName", galleryName);
+        GalleryResponseDTO responseDTO = articleService.galleryResponseService(galleryName);
+        model.addAttribute("gallery", responseDTO);
         return "article/article_new";
     }
 
@@ -117,9 +119,10 @@ public class ArticleController {
             requestPage = (int) (page - 1);
         }
         Page<ArticleListResponseDTO> articlePage = articleService.getArticleListAsPage(requestPage, galleryName, sessionUser, search);
+        GalleryResponseDTO responseDTO = articleService.galleryResponseService(galleryName);
+        model.addAttribute("gallery", responseDTO);
         model.addAttribute("articleList", articlePage);
         model.addAttribute("sessionUser", sessionUser);
-        model.addAttribute("galleryName", galleryName);
         return "article/gallery/gallery-main";
     }
 

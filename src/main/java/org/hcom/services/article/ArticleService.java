@@ -11,6 +11,7 @@ import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
 import org.hcom.models.article.support.ArticleRepository;
 import org.hcom.models.gallery.Gallery;
+import org.hcom.models.gallery.dtos.GalleryResponseDTO;
 import org.hcom.models.gallery.support.GalleryRepository;
 import org.hcom.models.like.Like;
 import org.hcom.models.like.dtos.request.LikeDTO;
@@ -139,5 +140,12 @@ public class ArticleService {
     @Transactional
     public List<Gallery> getGalleryList() {
         return galleryRepository.findAll();
+    }
+
+    @Transactional
+    public GalleryResponseDTO galleryResponseService(String galleryName) {
+        Gallery gallery = galleryRepository.findByGalleryName(galleryName).orElseThrow(() -> new NoSuchGalleryFoundException(galleryName));
+        Long articleCount = articleRepository.countByGallery(gallery);
+        return new GalleryResponseDTO(gallery, articleCount);
     }
 }

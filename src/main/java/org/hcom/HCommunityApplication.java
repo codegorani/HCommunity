@@ -48,11 +48,11 @@ public class HCommunityApplication implements CommandLineRunner {
         List<User> userList = makeTempUser(2);
         userRepository.saveAll(userList);
         GallerySaveRequestDTO requestDTO1 = new GallerySaveRequestDTO();
-        requestDTO1.setGalleryName("baseballKor");
-        requestDTO1.setGalleryKorName("국내야구");
+        requestDTO1.setGalleryName("famousStar");
+        requestDTO1.setGalleryKorName("연예인");
         GallerySaveRequestDTO requestDTO2 = new GallerySaveRequestDTO();
-        requestDTO2.setGalleryName("baseballOth");
-        requestDTO2.setGalleryKorName("해외야구");
+        requestDTO2.setGalleryName("football");
+        requestDTO2.setGalleryKorName("축구");
         galleryRepository.save(requestDTO1.toEntity());
         galleryRepository.save(requestDTO2.toEntity());
 //        doSeleniumTest();

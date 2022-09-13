@@ -18,4 +18,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findAllByUserAndTitleContains(User user, String title, Pageable pageable);
 
     Page<Article> findAllByUser(User user, Pageable pageable);
+
+    Long countByGallery(Gallery gallery);
 }

@@ -6,6 +6,7 @@
 <div th:replace="fragments/common :: header"></div>
 <input type="hidden" th:id="user" th:if="${sessionUser != null}" th:value="1"/>
 <input type="hidden" th:id="user" th:if="${sessionUser == null}" th:value="0"/>
+<p class="alert alert-primary" th:text="${gallery.galleryKorName + '갤러리'}"></p>
 <div th:if="${articleList.size == 0}">
     <h2>게시물이 없습니다.</h2>
 </div>
@@ -18,7 +19,7 @@
         <td>추천수</td>
         <td></td>
     </tr>
-    <tr th:each="article: ${articleList}" th:if="${!#lists.contains(sessionUser.blockUserList, article.nickname)}">
+    <tr th:each="article: ${articleList}" th:if="${sessionUser == null || !#lists.contains(sessionUser.blockUserList, article.nickname)}">
         <td><a th:href="@{/article/view/{id}(id=${article.idx})}" th:text="${article.title}"></a></td>
         <td th:text="${article.nickname}"></td>
         <td th:text="${article.createdDate}"></td>
@@ -30,7 +31,7 @@
         </td>
     </tr>
 </table>
-<a role="button" class="btn btn-primary" th:href="@{/{gallery}gall/new(gallery=${galleryName})}" th:if="${sessionUser != null}">게시물 작성</a>
+<a role="button" class="btn btn-primary" th:href="@{/article/{gallery}gall/new(gallery=${gallery.galleryName})}" th:if="${sessionUser != null}">게시물 작성</a>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <script th:src="@{/js/article/Article.js}"></script>
 <div th:replace="fragments/common :: footer"></div>

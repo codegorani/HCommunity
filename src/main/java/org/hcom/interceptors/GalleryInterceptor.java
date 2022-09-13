@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
-public class BaseControlInterceptor implements HandlerInterceptor {
+@Component
+public class GalleryInterceptor implements HandlerInterceptor {
 
     private final GalleryRepository galleryRepository;
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        System.out.println("POST HANDLE START");
         if(modelAndView != null) {
             List<Gallery> galleryList = galleryRepository.findAll();
             modelAndView.getModelMap()
