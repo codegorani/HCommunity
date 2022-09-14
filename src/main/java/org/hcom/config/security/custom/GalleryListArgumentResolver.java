@@ -24,7 +24,8 @@ public class GalleryListArgumentResolver implements HandlerMethodArgumentResolve
     public boolean supportsParameter(MethodParameter parameter) {
         boolean isGalleryList = parameter.getParameterAnnotation(GalleryList.class) != null;
         boolean isList = parameter.getParameterType().equals(List.class);
-        return isGalleryList && isList;
+        boolean isGalleryGeneric = parameter.getGenericParameterType().equals(Gallery.class);
+        return isGalleryList && isList && isGalleryGeneric;
     }
 
     @Override
