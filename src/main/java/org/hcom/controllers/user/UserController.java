@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage(HttpServletRequest request, Model model, @LoginUser SessionUser sessionUser) {
+    public String loginPage(HttpServletRequest request, Model model, boolean isRememberMe, @LoginUser SessionUser sessionUser) {
         if(sessionUser != null) {
             return "redirect:/";
         }
