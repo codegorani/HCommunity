@@ -1,6 +1,7 @@
 package org.hcom.controllers.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hcom.config.security.authorize.LoginUser;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class UserController {
@@ -31,8 +33,9 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String loginPage(HttpServletRequest request, Model model, boolean isRememberMe, @LoginUser SessionUser sessionUser) {
+    public String loginPage(HttpServletRequest request, Model model, @LoginUser SessionUser sessionUser) {
         if(sessionUser != null) {
+            log.debug("already login user <<username>>::" + sessionUser.getUsername());
             return "redirect:/";
         }
         doInit();
@@ -40,6 +43,7 @@ public class UserController {
         request.getSession().setAttribute("prevPage", referer);
 
         if(referer != null && !fineUrlList.contains(referer)) {
+            log.debug("is401 Error");
             model.addAttribute("is401", true);
         }
 
@@ -58,6 +62,7 @@ public class UserController {
     @GetMapping("/signup")
     public String signup(@LoginUser SessionUser sessionUser) {
         if(sessionUser != null) {
+            log.debug("login user cannot signup <<username>>::" + sessionUser.getUsername());
             return "redirect:/";
         }
         return "user/signup";
@@ -66,6 +71,7 @@ public class UserController {
     @GetMapping("/welcome")
     public String welcome(@LoginUser SessionUser sessionUser) {
         if(sessionUser != null) {
+            log.debug("login user cannot see welcome <<username>>::" + sessionUser.getUsername());
             return "redirect:/";
         }
         return "user/welcome";
