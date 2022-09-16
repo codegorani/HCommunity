@@ -31,7 +31,7 @@
         </td>
     </tr>
 </table>
-<a role="button" class="btn btn-primary" th:href="@{/article/{gallery}gall/new(gallery=${gallery.galleryName})}" th:if="${sessionUser != null}">게시물 작성</a>
+<a role="button" class="btn btn-primary" th:href="@{/article/new/{gallery}gall(gallery=${gallery.galleryName})}" th:if="${sessionUser != null}">게시물 작성</a>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <script th:src="@{/js/article/Article.js}"></script>
 <div th:replace="fragments/common :: footer"></div>

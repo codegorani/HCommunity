@@ -38,14 +38,12 @@ public class ArticleController {
     @Value("${image.upload.path}")
     private String uploadPath;
 
-    @GetMapping("/article/{galleryName}gall/new")
+    @GetMapping("/article/new/{galleryName}gall")
     public String articleNew(@LoginUser SessionUser sessionUser, @PathVariable("galleryName") String galleryName, Model model) {
-        if (sessionUser == null) {
-            throw new NotLoginUserException();
-        }
+
         GalleryResponseDTO responseDTO = articleService.galleryResponseService(galleryName);
         model.addAttribute("gallery", responseDTO);
-        return "article/article_new";
+        return "article/article-new";
     }
 
     @PostMapping("/article/new/imageUpload")

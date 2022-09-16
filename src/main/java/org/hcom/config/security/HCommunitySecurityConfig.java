@@ -38,9 +38,9 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
 
         // authority
         http.authorizeRequests()
-                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**", "/api", "/swagger-ui/**").permitAll()
-                .antMatchers("/api/v1/**")
+                .antMatchers("/api/v1/**", "/article/new/*gall")
                 .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name(), UserRole.MANAGER.name(), UserRole.DEVELOPER.name())
+                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**", "/api", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated();
 
         // login
@@ -76,6 +76,6 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationSuccessHandler successHandler() {
-        return new CustomLoginSuccessHandler("/");
+        return new CustomLoginSuccessHandler();
     }
 }
