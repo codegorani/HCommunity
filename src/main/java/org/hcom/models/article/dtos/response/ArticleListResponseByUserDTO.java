@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class ArticleListResponseByUserDTO {
     private Long idx;
+    private String nickname;
     private String title;
     private String contents;
     private String createdDate;
@@ -20,6 +21,7 @@ public class ArticleListResponseByUserDTO {
 
     public ArticleListResponseByUserDTO(Article article) {
         this.idx = article.getIdx();
+        this.nickname = article.getUser().getNickname();
         this.title = article.getTitle();
         this.contents = article.getContents();
         this.createdDate = article.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));

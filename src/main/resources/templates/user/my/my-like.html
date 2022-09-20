@@ -4,7 +4,26 @@
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
 <div th:replace="fragments/common :: header"></div>
-
+<div th:if="${articleList.size == 0}">
+    <h2>게시물이 없습니다.</h2>
+</div>
+<table class="table table-horizontal" th:if="${articleList.size != 0}">
+    <tr>
+        <td>제목</td>
+        <td>추천 수</td>
+        <td>댓글 수</td>
+        <td>작성일</td>
+        <td>작성자</td>
+    </tr>
+    <tr th:each="article: ${articleList}">
+        <td th:text="${article.title}"></td>
+        <td th:text="${article.allLike}"></td>
+        <td th:text="${article.allReply}"></td>
+        <td th:text="${article.createdDate}"></td>
+        <td th:text="${article.nickname}"></td>
+    </tr>
+</table>
+<a th:href="@{/my/{username}(username=${sessionUser.username})}">내정보 돌아가기</a>
 <div th:replace="layout/footer" th:remove="tag"></div>
 <div th:replace="fragments/common :: footer"></div>
 </body>
