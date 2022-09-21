@@ -22,9 +22,17 @@ public class QLike extends EntityPathBase<Like> {
 
     public static final QLike like = new QLike("like1");
 
+    public final org.hcom.models.common.QBaseTimeEntity _super = new org.hcom.models.common.QBaseTimeEntity(this);
+
     public final org.hcom.models.article.QArticle article;
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final org.hcom.models.user.QUser user;
 

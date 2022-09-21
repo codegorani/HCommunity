@@ -66,7 +66,7 @@ public class UserMyController {
         } else {
             requestPage = Integer.parseInt(String.valueOf(page));
         }
-        model.addAttribute("articleList", userMyService.getLikeListByUser(requestPage, sessionUser, search));
+        model.addAttribute("likeList", userMyService.getLikeListByUser(requestPage, sessionUser, search));
         model.addAttribute("sessionUser", sessionUser);
         return "user/my/my-like";
     }

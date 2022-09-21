@@ -35,4 +35,5 @@ public class Article extends BaseTimeEntity {
 
     @ManyToOne
     private Gallery gallery;
+
 }
