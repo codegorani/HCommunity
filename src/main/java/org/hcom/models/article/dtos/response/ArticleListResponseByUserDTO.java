@@ -18,6 +18,7 @@ public class ArticleListResponseByUserDTO {
     private String createdDate;
     private Long allReply;
     private Long allLike;
+    private int view;
 
     public ArticleListResponseByUserDTO(Article article) {
         this.idx = article.getIdx();
@@ -25,5 +26,6 @@ public class ArticleListResponseByUserDTO {
         this.title = article.getTitle();
         this.contents = article.getContents();
         this.createdDate = article.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.view = article.getView();
     }
 }

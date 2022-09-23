@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
@@ -22,4 +23,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     void deleteAllByArticle(Article article);
 
     List<Like> findAllByUser(User user);
+
+    Optional<Like> findByUserAndArticle(User user, Article article);
 }

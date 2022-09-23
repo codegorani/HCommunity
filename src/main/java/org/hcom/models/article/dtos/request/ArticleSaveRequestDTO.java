@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hcom.models.article.Article;
 import org.hcom.models.article.enums.ArticleType;
-import org.hcom.models.gallery.Gallery;
 import org.hcom.models.user.User;
 
 import javax.validation.constraints.NotBlank;
@@ -32,6 +31,7 @@ public class ArticleSaveRequestDTO {
                 .contents(contents)
                 .articleType(ArticleType.NORMAL)
                 .user(user)
+                .view(0)
                 .build();
     }
 }

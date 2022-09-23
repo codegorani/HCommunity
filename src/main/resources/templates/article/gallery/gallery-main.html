@@ -17,6 +17,7 @@
         <td>작성일</td>
         <td>댓글수</td>
         <td>추천수</td>
+        <td>조회수</td>
         <td></td>
     </tr>
     <tr th:each="article: ${articleList}" th:if="${sessionUser == null || !#lists.contains(sessionUser.blockUserList, article.nickname)}">
@@ -25,6 +26,7 @@
         <td th:text="${article.createdDate}"></td>
         <td th:text="${article.allReply}"></td>
         <td th:text="${article.allLike}"></td>
+        <td th:text="${article.view}"></td>
         <td>
             <a th:if="${article.isLike == 0}" id="btn-like" th:data-idx="${article.idx}">🤍</a>
             <a th:if="${article.isLike == 1}" id="btn-dislike" th:data-idx="${article.idx}">❤</a>

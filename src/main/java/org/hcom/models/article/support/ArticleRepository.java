@@ -6,6 +6,8 @@ import org.hcom.models.user.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -20,4 +22,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     Page<Article> findAllByUser(User user, Pageable pageable);
 
     Long countByGallery(Gallery gallery);
+
+    @Modifying
+    @Query("UPDATE h_article a SET a.view = a.view + 1 WHERE a.idx = :idx")
+    void updateViewCount(Long idx);
 }

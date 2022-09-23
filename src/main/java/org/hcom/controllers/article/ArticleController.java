@@ -3,11 +3,8 @@ package org.hcom.controllers.article;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.hcom.config.security.authorize.LoginUser;
-import org.hcom.config.security.custom.GalleryList;
-import org.hcom.exception.user.NotLoginUserException;
 import org.hcom.models.article.dtos.response.ArticleDetailResponseDTO;
 import org.hcom.models.article.dtos.response.ArticleListResponseDTO;
-import org.hcom.models.gallery.Gallery;
 import org.hcom.models.gallery.dtos.GalleryResponseDTO;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
@@ -22,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -100,8 +97,34 @@ public class ArticleController {
     }
 
     @GetMapping("/article/view/{articleIdx}")
-    public String viewArticle(@PathVariable("articleIdx") Long idx, @LoginUser SessionUser sessionUser, Model model) {
+    public String viewArticle(@PathVariable("articleIdx") Long idx, @LoginUser SessionUser sessionUser, Model model,
+                              HttpServletRequest request, HttpServletResponse response) {
         ArticleDetailResponseDTO responseDTO = articleService.articleViewService(idx, sessionUser);
+        Cookie oldCookie = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("postView")) {
+                    oldCookie = cookie;
+                }
+            }
+        }
+
+        if (oldCookie != null) {
+            if (!oldCookie.getValue().contains("["+ idx.toString() +"]")) {
+                articleService.updateView(idx);
+                oldCookie.setValue(oldCookie.getValue() + "_[" + idx + "]");
+                oldCookie.setPath("/");
+                oldCookie.setMaxAge(60 * 60 * 24); 							// 쿠키 시간
+                response.addCookie(oldCookie);
+            }
+        } else {
+            articleService.updateView(idx);
+            Cookie newCookie = new Cookie("postView", "[" + idx + "]");
+            newCookie.setPath("/");
+            newCookie.setMaxAge(60 * 60 * 24); 								// 쿠키 시간
+            response.addCookie(newCookie);
+        }
         model.addAttribute("article", responseDTO);
         model.addAttribute("sessionUser", sessionUser);
         return "article/article-view";
@@ -125,7 +148,8 @@ public class ArticleController {
     }
 
     @GetMapping("/article")
-    public String viewArticleMain() {
+    public String viewArticleMain(Model model, @LoginUser SessionUser sessionUser) {
+        model.addAttribute("sessionUser", sessionUser);
         return "article/article-main";
     }
 }

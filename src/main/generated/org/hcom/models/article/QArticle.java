@@ -42,6 +42,8 @@ public class QArticle extends EntityPathBase<Article> {
 
     public final org.hcom.models.user.QUser user;
 
+    public final NumberPath<Integer> view = createNumber("view", Integer.class);
+
     public QArticle(String variable) {
         this(Article.class, forVariable(variable), INITS);
     }

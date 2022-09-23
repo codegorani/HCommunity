@@ -48,6 +48,6 @@ public class MvcWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(galleryInterceptor)
-                .addPathPatterns("/article/**");
+                .addPathPatterns("/article/**", "/article");
     }
 }

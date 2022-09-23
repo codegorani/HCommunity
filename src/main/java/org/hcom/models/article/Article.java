@@ -33,6 +33,9 @@ public class Article extends BaseTimeEntity {
     @Column
     private ArticleType articleType;
 
+    @Column(nullable = false)
+    private int view;
+
     @ManyToOne
     private Gallery gallery;
 

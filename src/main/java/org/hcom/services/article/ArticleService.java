@@ -1,6 +1,7 @@
 package org.hcom.services.article;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.exception.article.LikeAlreadyExistException;
 import org.hcom.exception.article.NoSuchArticleFoundException;
 import org.hcom.exception.gallery.NoSuchGalleryFoundException;
 import org.hcom.exception.user.NoPermissionException;
@@ -102,7 +103,12 @@ public class ArticleService {
     public void articleLikeService(LikeDTO likeDTO, SessionUser sessionUser) {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
         Article article = articleRepository.findById(likeDTO.getIdx()).orElseThrow(NoSuchArticleFoundException::new);
-        likeRepository.save(Like.builder().user(user).article(article).build());
+        Like like = likeRepository.findByUserAndArticle(user, article).orElse(null);
+        if (like == null) {
+            likeRepository.save(Like.builder().user(user).article(article).build());
+        } else {
+            throw new LikeAlreadyExistException();
+        }
         User writer = article.getUser();
         if(!writer.getNickname().equals(user.getNickname())) {
             writer.modifyUserPoint(30);
@@ -147,5 +153,10 @@ public class ArticleService {
         Gallery gallery = galleryRepository.findByGalleryName(galleryName).orElseThrow(() -> new NoSuchGalleryFoundException(galleryName));
         Long articleCount = articleRepository.countByGallery(gallery);
         return new GalleryResponseDTO(gallery, articleCount);
+    }
+
+    @Transactional
+    public void updateView(Long idx) {
+        articleRepository.updateViewCount(idx);
     }
 }

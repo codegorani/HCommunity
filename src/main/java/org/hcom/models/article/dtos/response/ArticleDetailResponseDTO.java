@@ -25,6 +25,7 @@ public class ArticleDetailResponseDTO {
     private Long isLike;
     private int allReply;
     private String galleryName;
+    private int view;
 
     public ArticleDetailResponseDTO(Article article, List<Reply> replyList) {
         this.idx = article.getIdx();
@@ -35,5 +36,6 @@ public class ArticleDetailResponseDTO {
         this.replyList = replyList.stream().map(ReplyResponseDTO::new).collect(Collectors.toList());
         this.allReply = replyList.size();
         this.galleryName = article.getGallery().getGalleryName();
+        this.view = article.getView();
     }
 }
