@@ -16,6 +16,7 @@ public class ArticleListResponseByUserDTO {
     private String title;
     private String contents;
     private String createdDate;
+    private String galleryKorName;
     private Long allReply;
     private Long allLike;
     private int view;
@@ -26,6 +27,7 @@ public class ArticleListResponseByUserDTO {
         this.title = article.getTitle();
         this.contents = article.getContents();
         this.createdDate = article.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.galleryKorName = article.getGallery().getGalleryKorName();
         this.view = article.getView();
     }
 }

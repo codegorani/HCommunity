@@ -50,7 +50,17 @@ public class UserMyController {
     @GetMapping("/my/reply/{username}")
     public String userMyReplyPage(@PathVariable("username") String username, @LoginUser SessionUser sessionUser, Model model,
                                   @RequestParam(required = false) String search, @RequestParam(required = false) Long page) {
-
+        if(!username.equals(sessionUser.getUsername())) {
+            throw new NoPermissionException();
+        }
+        int requestPage;
+        if(page == null) {
+            requestPage = 0;
+        } else {
+            requestPage = Integer.parseInt(String.valueOf(page));
+        }
+        model.addAttribute("replyList", userMyService.getReplyListByUser(requestPage, sessionUser, search));
+        model.addAttribute("sessionUser", sessionUser);
         return "user/my/my-reply";
     }
 

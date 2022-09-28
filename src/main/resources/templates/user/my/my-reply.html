@@ -4,8 +4,26 @@
 <div th:replace="layout/header" th:remove="tag"></div>
 <body>
 <div th:replace="fragments/common :: header"></div>
-
+<table class="table table-horizontal">
+    <tr>
+        <td>댓글</td>
+        <td>원본글</td>
+        <td>작성일자</td>
+        <td>삭제</td>
+    </tr>
+    <tr th:each="reply: ${replyList}">
+        <td th:text="${reply.replyContent}"></td>
+        <td>
+            <a th:href="@{/article/view/{articleIdx}(articleIdx=${reply.articleIdx})}" th:text="${reply.articleTitle}"></a>
+        </td>
+        <td th:text="${reply.createdDate}"></td>
+        <td>
+            <a class="btn-reply-delete" th:data-idx="${reply.idx}">❌</a>
+        </td>
+    </tr>
+</table>
 <div th:replace="layout/footer" th:remove="tag"></div>
+<script th:src="@{/js/article/Article.js}"></script>
 <div th:replace="fragments/common :: footer"></div>
 </body>
 </html>

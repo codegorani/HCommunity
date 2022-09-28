@@ -10,6 +10,8 @@ import java.util.List;
 
 @Repository
 public interface ReplyRepository extends JpaRepository<Reply, Long> {
+    List<Reply> findAllByUser(User user);
+
     List<Reply> findAllByArticle(Article article);
 
     void deleteAllByArticle(Article article);

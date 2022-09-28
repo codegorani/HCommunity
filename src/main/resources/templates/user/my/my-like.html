@@ -20,7 +20,9 @@
     </tr>
     <tr th:each="like: ${likeList}">
         <td th:text="${like.galleryKorName}"></td>
-        <td th:text="${like.title}"></td>
+        <td>
+            <a th:href="@{/article/view/{idx}(idx=${like.articleIdx})}" th:text="${like.title}"></a>
+        </td>
         <td th:text="${like.allLike}"></td>
         <td th:text="${like.allReply}"></td>
         <td th:text="${like.articleDate}"></td>

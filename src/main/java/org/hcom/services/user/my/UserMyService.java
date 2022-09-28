@@ -9,6 +9,8 @@ import org.hcom.models.article.support.ArticleRepository;
 import org.hcom.models.like.Like;
 import org.hcom.models.like.dtos.response.LikeListResponseByUserDTO;
 import org.hcom.models.like.support.LikeRepository;
+import org.hcom.models.reply.Reply;
+import org.hcom.models.reply.dtos.response.ReplyListResponseByUserDTO;
 import org.hcom.models.reply.support.ReplyRepository;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.SessionUser;
@@ -60,6 +62,17 @@ public class UserMyService {
             response.setAllReply(replyRepository.countAllByArticle(article));
             response.setAllLike(likeRepository.countAllByArticle(article));
         }
+        PageRequest pageRequest = PageRequest.of(page, 10);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start + pageRequest.getPageSize()), responseList.size());
+        return new PageImpl<>(responseList.subList(start, end), pageRequest, responseList.size());
+    }
+
+    @Transactional
+    public Page<ReplyListResponseByUserDTO> getReplyListByUser(int page, SessionUser sessionUser, String search) {
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
+        List<Reply> replyList = replyRepository.findAllByUser(user);
+        List<ReplyListResponseByUserDTO> responseList = replyList.stream().map(ReplyListResponseByUserDTO::new).collect(Collectors.toList());
         PageRequest pageRequest = PageRequest.of(page, 10);
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start + pageRequest.getPageSize()), responseList.size());

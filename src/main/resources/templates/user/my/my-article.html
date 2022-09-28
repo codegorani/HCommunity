@@ -9,17 +9,23 @@
 </div>
 <table class="table table-horizontal" th:if="${articleList.size != 0}">
     <tr>
+        <td>갤러리</td>
         <td>제목</td>
         <td>추천 수</td>
         <td>댓글 수</td>
+        <td>조회수</td>
         <td>작성일</td>
         <td>수정</td>
         <td>삭제</td>
     </tr>
     <tr th:each="article: ${articleList}">
-        <td th:text="${article.title}"></td>
+        <td th:text="${article.galleryKorName + '갤러리'}"></td>
+        <td>
+            <a th:href="@{/article/view/{idx}(idx=${article.idx})}" th:text="${article.title}"></a>
+        </td>
         <td th:text="${article.allLike}"></td>
         <td th:text="${article.allReply}"></td>
+        <td th:text="${article.view}"></td>
         <td th:text="${article.createdDate}"></td>
         <td><a role="button" class="btn btn-secondary" th:href="@{/article/modify/{idx}(idx=${article.idx})}">수정</a></td>
         <td><button type="button" class="btn btn-danger btn-article-delete" data-page="my" th:data-idx="${article.idx}" id="btn-article-delete">삭제</button></td>
