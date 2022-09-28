@@ -81,7 +81,7 @@ public class UserSaveRequestDTO {
                 .blockUserList(new ArrayList<>())
                 .totalArticleCount(0)
                 .totalReplyCount(0)
-                .lastLoginTime(LocalDateTime.of(1900, 1, 1, 0, 0))
+                .lastLoginTime(LocalDateTime.now())
                 .userStatus(UserStatus.ACTIVE)
                 .userRole(UserRole.USER)
                 .userGrade(UserGrade.BRONZE)

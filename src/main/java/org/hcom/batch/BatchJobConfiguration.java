@@ -1,12 +1,14 @@
 package org.hcom.batch;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hcom.models.user.User;
 import org.hcom.models.user.enums.UserStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
@@ -19,30 +21,34 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @SpringBootConfiguration
 public class BatchJobConfiguration {
 
     private final EntityManagerFactory entityManagerFactory;
+    private final JobBuilderFactory jobBuilderFactory;
+    private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job inactiveUserJob(JobBuilderFactory jobBuilderFactory, Step inactiveJobStep) {
+    public Job inactiveUserJob() {
+        log.info("inactiveJobStart");
         return jobBuilderFactory.get("inactiveUserJob")
-                .start(inactiveJobStep)
+                .start(inactiveJobStep())
                 .build();
     }
 
     @Bean
-    public Step inactiveJobStep(StepBuilderFactory stepBuilderFactory,
-                                JpaPagingItemReader<User> inactiveUserReader) {
+    public Step inactiveJobStep() {
         return stepBuilderFactory.get("inactiveJobStep")
                 .<User, User> chunk(10)
-                .reader(inactiveUserReader)
+                .reader(inactiveUserReader(null))
                 .processor(inactiveUserProcessor())
                 .writer(inactiveUserWriter())
                 .build();
     }
 
+    @StepScope
     @Bean(destroyMethod = "")
     public JpaPagingItemReader<User> inactiveUserReader(@Value("${batch.parameter.nowDate}") String nowDate) {
         JpaPagingItemReader<User> jpaPagingItemReader = new JpaPagingItemReader<>();
