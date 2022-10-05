@@ -90,23 +90,23 @@ clean.doLast {
 }
 
 // npm install
-task appNpmInstall(type: NpmTask) {
-    workingDir = file("${project.projectDir}/frontend")
-    args = ["install"]
-}
-
-// npm build
-task npmBuild(type: NpmTask) {
-    workingDir = file("${project.projectDir}/frontend")
-    args = ["run", "build"]
-}
-
-// 빌드된 결과 이동
-task copyWebApp(type: Copy) {
-    from "front-end/build"
-    into 'build/resources/main/static/'
-}
-
-npmBuild.dependsOn appNpmInstall
-copyWebApp.dependsOn npmBuild
-compileJava.dependsOn copyWebApp
+//task appNpmInstall(type: NpmTask) {
+//    workingDir = file("${project.projectDir}/frontend")
+//    args = ["install"]
+//}
+//
+//// npm build
+//task npmBuild(type: NpmTask) {
+//    workingDir = file("${project.projectDir}/frontend")
+//    args = ["run", "build"]
+//}
+//
+//// 빌드된 결과 이동
+//task copyWebApp(type: Copy) {
+//    from "front-end/build"
+//    into 'build/resources/main/static/'
+//}
+//
+//npmBuild.dependsOn appNpmInstall
+//copyWebApp.dependsOn npmBuild
+//compileJava.dependsOn copyWebApp

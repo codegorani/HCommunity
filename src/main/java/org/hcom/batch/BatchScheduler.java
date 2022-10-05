@@ -25,7 +25,7 @@ public class BatchScheduler {
     private final JobLauncher jobLauncher;
     private final BatchJobConfiguration batchJobConfiguration;
 
-    @Scheduled(cron = "5 * * * * *")
+    @Scheduled(cron = "0 0/10 * * * *")
     public void run() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));

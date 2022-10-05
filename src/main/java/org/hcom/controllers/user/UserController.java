@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,7 @@ public class UserController {
     private List<String> fineUrlList;
     private final ArticleService articleService;
     private final UserService userService;
+    private final HttpSession httpSession;
 
     public void doInit() {
         fineUrlList = new ArrayList<>();
@@ -51,10 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/login/error")
-    public String loginError(Model model, @LoginUser SessionUser sessionUser) {
-        if(sessionUser != null) {
-            return "redirect:/";
-        }
+    public String loginError(Model model) {
+        httpSession.removeAttribute("user");
         model.addAttribute("isError", true);
         return "user/login";
     }

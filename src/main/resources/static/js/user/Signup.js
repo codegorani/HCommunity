@@ -192,7 +192,7 @@ const signup = {
             dataType: 'text',
             contentType: 'text/plain; charset=utf-8',
             success: function(data) {
-                if (data === 'valid') {
+                if (data === 'VALID') {
                     alert('사용 가능한 닉네임 입니다.');
                     $('#btn-nickname-auth').attr('disabled', true);
                     $('#nickname').attr('readonly', true);
@@ -220,7 +220,7 @@ const signup = {
             dataType: 'text',
             contentType: 'text/plain; charset=utf-8',
             success: function(data) {
-                if (data === 'valid') {
+                if (data === 'VALID') {
                     alert('사용 가능한 아이디 입니다.');
                     $('#btn-username-auth').attr('disabled', true);
                     $('#username').attr('readonly', true);

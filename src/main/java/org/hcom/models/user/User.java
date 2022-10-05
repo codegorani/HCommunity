@@ -38,6 +38,9 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private int failCount;
+
     @Column(nullable = false, unique = true)
     private String nickname;
 
@@ -154,5 +157,9 @@ public class User extends BaseTimeEntity {
     public User inactive() {
         this.userStatus = UserStatus.INACTIVE;
         return this;
+    }
+
+    public void increaseFailCount() {
+        this.failCount = this.failCount + 1;
     }
 }

@@ -1,6 +1,7 @@
 package org.hcom.services.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hcom.exception.user.LoginFailureException;
 import org.hcom.exception.user.NoPermissionException;
 import org.hcom.exception.user.NoSuchUserFoundException;
@@ -32,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService implements UserDetailsService {
@@ -208,9 +210,9 @@ public class UserService implements UserDetailsService {
     public String usernameAuthService(String username) {
         String valid;
         if(userRepository.findByUsername(username).isEmpty()) {
-            valid = "valid";
+            valid = "VALID";
         } else {
-            valid = "invalid";
+            valid = "INVALID";
         }
         return valid;
     }
@@ -219,9 +221,9 @@ public class UserService implements UserDetailsService {
     public String nicknameAuthService(String username) {
         String valid;
         if(userRepository.findByNickname(username).isEmpty()) {
-            valid = "valid";
+            valid = "VALID";
         } else {
-            valid = "invalid";
+            valid = "INVALID";
         }
         return valid;
     }

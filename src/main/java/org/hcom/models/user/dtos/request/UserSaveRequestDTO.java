@@ -69,6 +69,7 @@ public class UserSaveRequestDTO {
         return User.builder()
                 .username(username)
                 .password(password)
+                .failCount(0)
                 .nickname(nickname)
                 .lastName(lastName)
                 .firstName(firstName)
