@@ -1,3 +1,7 @@
+let isPasswordValid = false;
+let isConfirmPasswordValid;
+
+
 const article = {
     init: function () {
         const _this = this;
@@ -34,6 +38,21 @@ const article = {
                 _this.articleDelete(idx, page);
             }
         });
+
+        $('#new-password').on('keyup', function() {
+            _this.passwordValidate();
+            if($('#confirm-new-password').val() !== '') {
+                _this.newPasswordEqual();
+            }
+        });
+
+        $('#confirm-new-password').on('keyup', function() {
+            _this.newPasswordEqual();
+        });
+
+        $('#btn-password-reset').on('click', function() {
+            _this.passwordReset();
+        })
     },
     articleSave: function () {
         const data = {
@@ -156,6 +175,77 @@ const article = {
         }).fail(function (error) {
             alert(JSON.stringify(error))
             location.href = '/error/' + error.status;
+        })
+    },
+    newPasswordEqual: function() {
+        const myPassword = $('#new-password').val();
+        const confirmPassword = $('#confirm-new-password').val();
+        if (myPassword !== confirmPassword) {
+            $('#password-warn').css('display', 'block');
+            $('#password-confirm-good').css('display', 'none');
+            $('#password-confirm').css('border', 'solid 2px red');
+            isConfirmPasswordValid = false;
+        } else {
+            $('#password-warn').css('display', 'none');
+            $('#password-confirm-good').css('display', 'block');
+            $('#password-confirm').css('border', 'solid 2px limegreen');
+            //$('#password').attr('readonly', true);
+            isConfirmPasswordValid = true;
+        }
+    },
+
+    passwordValidate: function() {
+
+        const password = $('#new-password').val();
+
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@!%*#?&]{8,}$/;
+
+        let isGoodPattern = false;
+
+        if (!passwordPattern.test(password) || (password.length < 9 || password.length > 13)) {
+            $('#password-warning').css('display', 'block');
+            isGoodPattern = false;
+        } else {
+            $('#password-warning').css('display', 'none');
+            isGoodPattern = true;
+        }
+
+        if (isGoodPattern) {
+            $('#password-good').css('display', 'block');
+            $('#password').css('border', 'solid 2px limegreen');
+            isPasswordValid = true;
+        } else {
+            $('#password-good').css('display', 'none');
+            $('#password').css('border', 'solid 2px red');
+            isPasswordValid = false;
+        }
+    },
+
+    passwordReset: function() {
+        const data = {
+            currentPassword: $('#current-password').val(),
+            newPassword: $('#new-password').val()
+        }
+
+        $.ajax({
+            url: '/api/v1/my/resetPassword',
+            method: 'PUT',
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'text',
+            data: JSON.stringify(data)
+        }).done(function(data) {
+            if(data === 'SUCCESS') {
+                alert('패스워드 변경이 완료되었습니다. 재접속해주세요.');
+                location.href = '/logout';
+            } else if (data === 'CURRENT_PASSWORD_ERROR') {
+                alert('현재 비밀번호가 맞지않습니다. 다시시도해주세요.');
+                location.reload();
+            } else if(data === 'NEW_PASSWORD_IS_CURRENT') {
+                alert('현재 사용중인 패스워드입니다.');
+                location.reload();
+            }
+        }).fail(function(error) {
+            alert(JSON.stringify(error));
         })
     }
 }

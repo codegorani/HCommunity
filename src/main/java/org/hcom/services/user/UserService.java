@@ -10,6 +10,7 @@ import org.hcom.models.reply.support.ReplyRepository;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
+import org.hcom.models.user.dtos.request.UserResetPasswordRequestDTO;
 import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
@@ -77,23 +78,29 @@ public class UserService implements UserDetailsService {
     /**
      * Update user's password
      * Request
-     * @param username user-id
-     * @param password new password
+     * @param requestDTO password data
+     * @param sessionUser login-user
      * @return updated user's db index
      * @throws ResponseStatusException if sessionUser is null
      */
     @Transactional
-    public Long userPasswordResetService(String username, String password, SessionUser sessionUser) throws ResponseStatusException {
-        User user = userRepository.findByUsername(username).orElseThrow(NoSuchUserFoundException::new);
+    public String userPasswordResetService(UserResetPasswordRequestDTO requestDTO, SessionUser sessionUser) throws ResponseStatusException {
+        User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
 
         if(sessionUser == null) {
             throw new NotLoginUserException();
         }
-        if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx())) ||
-                (sessionUser.getUserRole().equals(UserRole.ADMIN)) || (sessionUser.getUserRole().equals(UserRole.DEVELOPER))) {
+        if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx()))) {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            user.passwordReset(passwordEncoder.encode(password));
-            return userRepository.save(user).getIdx();
+            if(passwordEncoder.matches(requestDTO.getNewPassword(), user.getPassword())) {
+                return "NEW_PASSWORD_IS_CURRENT";
+            } else if(passwordEncoder.matches(requestDTO.getCurrentPassword(), user.getPassword())) {
+                user.passwordReset(passwordEncoder.encode(requestDTO.getNewPassword()));
+                userRepository.save(user);
+                return "SUCCESS";
+            } else {
+                return "CURRENT_PASSWORD_ERROR";
+            }
         } else {
             return null;
         }

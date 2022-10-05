@@ -6,6 +6,7 @@ import org.hcom.exception.user.NoPermissionException;
 import org.hcom.models.common.ResponseResult;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
+import org.hcom.models.user.dtos.request.UserResetPasswordRequestDTO;
 import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
@@ -64,10 +65,9 @@ public class UserAPIController {
         return result;
     }
 
-    @PutMapping("/api/v1/my/{username}/password")
-    public Long userPasswordUpdateControl(@PathVariable("username") String username, String password,
-                                          @LoginUser SessionUser sessionUser) {
-        return userService.userPasswordResetService(username, password, sessionUser);
+    @PutMapping("/api/v1/my/resetPassword")
+    public String userPasswordUpdateControl(@RequestBody UserResetPasswordRequestDTO requestDTO, @LoginUser SessionUser sessionUser) {
+        return userService.userPasswordResetService(requestDTO, sessionUser);
     }
 
     @PutMapping("/api/v1/my/{username}")
@@ -85,5 +85,6 @@ public class UserAPIController {
     public void userDeleteControl(@PathVariable("username") String username, @LoginUser SessionUser sessionUser) {
         userService.userDeleteService(username, sessionUser);
     }
+
 
 }

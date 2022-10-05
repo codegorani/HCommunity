@@ -80,4 +80,19 @@ public class UserMyController {
         model.addAttribute("sessionUser", sessionUser);
         return "user/my/my-like";
     }
+
+    @GetMapping("/my/info/{username}")
+    public String userMyInfoPage(@PathVariable("username") String username, @LoginUser SessionUser sessionUser, Model model) {
+        if(!username.equals(sessionUser.getUsername())) {
+            throw new NoPermissionException();
+        }
+        model.addAttribute("sessionUser", sessionUser);
+        return "user/my/my-info";
+    }
+
+    @GetMapping("/my/info/resetPassword")
+    public String userResetPasswordPage(@LoginUser SessionUser sessionUser, Model model) {
+        model.addAttribute("sessionUser", sessionUser);
+        return "user/my/reset-password";
+    }
 }
