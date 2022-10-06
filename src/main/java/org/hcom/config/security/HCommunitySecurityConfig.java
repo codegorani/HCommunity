@@ -1,6 +1,7 @@
 package org.hcom.config.security;
 
 import lombok.RequiredArgsConstructor;
+import org.hcom.config.security.authorize.CustomLoginFailureHandler;
 import org.hcom.config.security.authorize.CustomLoginSuccessHandler;
 import org.hcom.models.user.enums.UserRole;
 import org.hcom.services.user.UserService;
@@ -13,7 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @RequiredArgsConstructor
@@ -23,6 +23,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
+    private final CustomLoginFailureHandler failureHandler;
+    private final CustomLoginSuccessHandler successHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +40,7 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/v1/**", "/article/new/*gall")
                 .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name(), UserRole.MANAGER.name(), UserRole.DEVELOPER.name())
-                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**", "/api", "/swagger-ui/**").permitAll()
+                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**", "/api", "/swagger-ui/**", "/h2-console/**", "/forgotPassword/**").permitAll()
                 .anyRequest().authenticated();
 
         // login
@@ -47,9 +49,9 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/")
-                .successHandler(successHandler())
-                .failureUrl("/login/error")
+                .successForwardUrl("/")
+                .successHandler(successHandler)
+                .failureHandler(failureHandler)
                 .permitAll();
 
         // logout
@@ -71,8 +73,4 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        return new CustomLoginSuccessHandler();
-    }
 }

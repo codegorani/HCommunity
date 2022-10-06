@@ -3,12 +3,15 @@ package org.hcom.controllers.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hcom.config.security.authorize.LoginUser;
+import org.hcom.exception.user.NoPermissionException;
 import org.hcom.models.user.dtos.SessionUser;
 import org.hcom.services.article.ArticleService;
 import org.hcom.services.user.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,6 +34,8 @@ public class UserController {
         fineUrlList.add("http://localhost:8080/article");
         fineUrlList.add("http://localhost:8080/error");
         fineUrlList.add("http://localhost:8080/welcome");
+        fineUrlList.add("http://localhost:8080/login");
+        fineUrlList.add("http://localhost:8080/forgotPassword");
     }
 
     @GetMapping("/login")
@@ -43,18 +48,20 @@ public class UserController {
         String referer = (String) request.getHeader("Referer");
         request.getSession().setAttribute("prevPage", referer);
 
-        if(referer != null && !fineUrlList.contains(referer)) {
-            log.debug("is401 Error");
-            model.addAttribute("is401", true);
-        }
-
         return "user/login";
     }
 
-    @GetMapping("/login/error")
+    @PostMapping("/login/error")
     public String loginError(Model model) {
         httpSession.removeAttribute("user");
         model.addAttribute("isError", true);
+        return "user/login";
+    }
+
+    @GetMapping("/login/locked")
+    public String loginLocked(Model model) {
+        httpSession.removeAttribute("user");
+        model.addAttribute("isLocked", true);
         return "user/login";
     }
 
@@ -74,5 +81,21 @@ public class UserController {
             return "redirect:/";
         }
         return "user/welcome";
+    }
+
+    @GetMapping("/forgotPassword")
+    public String forgotPassword() {
+        return "user/forgot-password";
+    }
+
+    @GetMapping("/forgotPassword/reset/{username}")
+    public String forgotPasswordReset(@PathVariable("username") String username, Model model) {
+        if(httpSession.getAttribute("resetPassword") != null && httpSession.getAttribute("resetPassword").equals(true)) {
+            model.addAttribute("username", username);
+            httpSession.removeAttribute("resetPassword");
+            return "user/forgot-password-reset";
+        } else {
+            throw new NoPermissionException();
+        }
     }
 }

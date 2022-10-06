@@ -9,13 +9,13 @@
         로그인이 필요한 서비스입니다. 로그인 후 이용해주세요.
     </div>
     <div th:if="${isLocked == true}" class="alert alert-warning">
-        로그인 오류 횟수 5회 초과로 계정이 잠겼습니다 패스워드 찾기 후 다시 시도하십시오.
+        로그인 오류 횟수 5회 초과로 계정이 잠겼습니다 <a th:href="@{/forgotPassword}">패스워드 찾기</a> 후 다시 시도하십시오.
     </div>
     <div th:if="${isError == true}" class="alert alert-danger">
         아이디또는 패스워드가 일치하지 않습니다.
     </div>
     <form th:action="@{/login}" method="POST">
-        <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Bootstrap_logo.svg" alt="" width="72" height="57">
+        <img class="mb-4" th:src="@{/images/HCommunity.jpg}" alt="" width="72" height="57">
         <h1 class="h3 mb-3 fw-normal">로그인 페이지</h1>
 
         <div class="form-floating">
@@ -32,6 +32,7 @@
                 <input type="checkbox" id="remember-me" name="remember-me"> 아이디 저장
             </label>
         </div>
+        <a th:href="@{/forgotPassword}">패스워드 찾기</a>
         <button id="btn-login" class="w-100 btn btn-lg btn-primary" type="submit">로그인</button>
     </form>
 </main>

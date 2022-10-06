@@ -5,9 +5,8 @@ import org.hcom.config.security.authorize.LoginUser;
 import org.hcom.exception.user.NoPermissionException;
 import org.hcom.models.common.ResponseResult;
 import org.hcom.models.user.dtos.SessionUser;
-import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
-import org.hcom.models.user.dtos.request.UserResetPasswordRequestDTO;
-import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
+import org.hcom.models.user.dtos.request.*;
+import org.hcom.models.user.dtos.response.UserFindAccountResponseDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.services.user.UserService;
@@ -15,11 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @RequiredArgsConstructor
 @RestController
 public class UserAPIController {
 
     private final UserService userService;
+    private final HttpSession httpSession;
 
     @PostMapping("/signup/username/auth")
     public String usernameAuthenticate(@RequestBody String username) {
@@ -86,5 +88,17 @@ public class UserAPIController {
         userService.userDeleteService(username, sessionUser);
     }
 
+    @PostMapping("/forgotPassword")
+    public UserFindAccountResponseDTO userFindAccountControl(@RequestBody UserFindAccountDTO dto) {
+        UserFindAccountResponseDTO responseDTO = userService.userFindAccountService(dto);
+        if(responseDTO.getResult().equals("FOUNDED")) {
+            httpSession.setAttribute("resetPassword", true);
+        }
+        return responseDTO;
+    }
 
+    @PostMapping("/forgotPassword/reset")
+    public String userForgotPasswordResetControl(@RequestBody UserPasswordResetDTO dto) {
+        return userService.userForgotPasswordResetService(dto);
+    }
 }

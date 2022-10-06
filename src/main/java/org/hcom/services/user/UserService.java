@@ -10,9 +10,8 @@ import org.hcom.models.like.support.LikeRepository;
 import org.hcom.models.reply.support.ReplyRepository;
 import org.hcom.models.user.User;
 import org.hcom.models.user.dtos.SessionUser;
-import org.hcom.models.user.dtos.request.UserModifyRequestDTO;
-import org.hcom.models.user.dtos.request.UserResetPasswordRequestDTO;
-import org.hcom.models.user.dtos.request.UserSaveRequestDTO;
+import org.hcom.models.user.dtos.request.*;
+import org.hcom.models.user.dtos.response.UserFindAccountResponseDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.models.user.enums.UserRole;
@@ -89,9 +88,6 @@ public class UserService implements UserDetailsService {
     public String userPasswordResetService(UserResetPasswordRequestDTO requestDTO, SessionUser sessionUser) throws ResponseStatusException {
         User user = userRepository.findByUsername(sessionUser.getUsername()).orElseThrow(NoSuchUserFoundException::new);
 
-        if(sessionUser == null) {
-            throw new NotLoginUserException();
-        }
         if((sessionUser.getUsername().equals(user.getUsername()) && sessionUser.getIdx().equals(user.getIdx()))) {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             if(passwordEncoder.matches(requestDTO.getNewPassword(), user.getPassword())) {
@@ -226,5 +222,36 @@ public class UserService implements UserDetailsService {
             valid = "INVALID";
         }
         return valid;
+    }
+
+    @Transactional
+    public UserFindAccountResponseDTO userFindAccountService(UserFindAccountDTO dto) {
+        User user = userRepository.findByUsernameAndEmail(dto.getUsername(), dto.getEmail()).orElse(null);
+        if(user != null) {
+             return UserFindAccountResponseDTO.builder()
+                     .username(user.getUsername())
+                     .result("FOUNDED")
+                     .build();
+        } else {
+             return UserFindAccountResponseDTO.builder()
+                     .username(null)
+                     .result("NOT_FOUNDED")
+                     .build();
+        }
+    }
+
+    @Transactional
+    public String userForgotPasswordResetService(UserPasswordResetDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername()).orElseThrow(NoSuchUserFoundException::new);
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(passwordEncoder.matches(dto.getNewPassword(), user.getPassword())) {
+            return "NEW_PASSWORD_IS_CURRENT";
+        } else {
+            user.passwordReset(passwordEncoder.encode(dto.getNewPassword()));
+            user.setFailCount(0);
+            userRepository.save(user);
+            return "SUCCESS";
+        }
     }
 }
