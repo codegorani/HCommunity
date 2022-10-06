@@ -101,4 +101,13 @@ public class UserAPIController {
     public String userForgotPasswordResetControl(@RequestBody UserPasswordResetDTO dto) {
         return userService.userForgotPasswordResetService(dto);
     }
+
+    @PostMapping("/inactive/clear")
+    public String inactiveUserClearControl(@RequestBody UserInactiveClearRequestDTO requestDTO) {
+        if(httpSession.getAttribute("inactive") != null && httpSession.getAttribute("inactive").equals(true)) {
+            return userService.userInactiveClearService(requestDTO);
+        } else {
+            throw new NoPermissionException();
+        }
+    }
 }

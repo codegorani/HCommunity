@@ -11,6 +11,12 @@
     <div th:if="${isLocked == true}" class="alert alert-warning">
         로그인 오류 횟수 5회 초과로 계정이 잠겼습니다 <a th:href="@{/forgotPassword}">패스워드 찾기</a> 후 다시 시도하십시오.
     </div>
+    <div th:if="${isInactive == true}" class="alert alert-warning">
+        해당 계정은 휴면계정으로 <a th:href="@{/inactive}">여기</a>를 클릭하여 활성화해야합니다.
+    </div>
+    <div th:if="${isBlocked == true}" class="alert alert-danger">
+        이 계정은 관리자에 의해 차단된 계정입니다. 관리자에게 문의하세요.
+    </div>
     <div th:if="${isError == true}" class="alert alert-danger">
         아이디또는 패스워드가 일치하지 않습니다.
     </div>

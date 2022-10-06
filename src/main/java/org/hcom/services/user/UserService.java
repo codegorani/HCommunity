@@ -15,6 +15,7 @@ import org.hcom.models.user.dtos.response.UserFindAccountResponseDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.models.user.enums.UserRole;
+import org.hcom.models.user.enums.UserStatus;
 import org.hcom.models.user.support.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -252,6 +253,29 @@ public class UserService implements UserDetailsService {
             user.setFailCount(0);
             userRepository.save(user);
             return "SUCCESS";
+        }
+    }
+
+    @Transactional
+    public String userInactiveClearService(UserInactiveClearRequestDTO requestDTO) {
+        User user = userRepository.findByUsername(requestDTO.getUsername()).orElse(null);
+        if(user == null) {
+            return "USERNAME_ERROR";
+        }
+
+        if(!user.getEmail().equals(requestDTO.getEmail())) {
+            return "EMAIL_ERROR";
+        }
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if(passwordEncoder.matches(requestDTO.getPassword(), user.getPassword())) {
+            user.setUserStatus(UserStatus.ACTIVE);
+            user.setFailCount(0);
+            httpSession.removeAttribute("inactive");
+            httpSession.removeAttribute("inactiveUser");
+            return "SUCCESS";
+        } else {
+            return "PASSWORD_ERROR";
         }
     }
 }

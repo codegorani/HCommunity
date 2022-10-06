@@ -40,7 +40,8 @@ public class HCommunitySecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/v1/**", "/article/new/*gall")
                 .hasAnyRole(UserRole.USER.name(), UserRole.ADMIN.name(), UserRole.MANAGER.name(), UserRole.DEVELOPER.name())
-                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**", "/article/**", "/api", "/swagger-ui/**", "/h2-console/**", "/forgotPassword/**").permitAll()
+                .antMatchers("/", "/js/**", "/css/**", "/images/**", "/login/**", "/logout/**", "/signup/**", "/error/**",
+                        "/article/**", "/api", "/swagger-ui/**", "/h2-console/**", "/forgotPassword/**", "/inactive/**").permitAll()
                 .anyRequest().authenticated();
 
         // login

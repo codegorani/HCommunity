@@ -54,7 +54,6 @@ public class UserController {
     @PostMapping("/login/error")
     public String loginError(Model model) {
         httpSession.removeAttribute("user");
-        model.addAttribute("isError", true);
         return "user/login";
     }
 
@@ -85,6 +84,9 @@ public class UserController {
 
     @GetMapping("/forgotPassword")
     public String forgotPassword() {
+        if(httpSession.getAttribute("inactive") != null) {
+            httpSession.removeAttribute("inactive");
+        }
         return "user/forgot-password";
     }
 
@@ -94,6 +96,16 @@ public class UserController {
             model.addAttribute("username", username);
             httpSession.removeAttribute("resetPassword");
             return "user/forgot-password-reset";
+        } else {
+            throw new NoPermissionException();
+        }
+    }
+
+    @GetMapping("/inactive")
+    public String inactiveClear(Model model) {
+        if(httpSession.getAttribute("inactive") != null && httpSession.getAttribute("inactive").equals(true)) {
+            model.addAttribute("inactiveUser", httpSession.getAttribute("inactiveUser"));
+            return "user/inactive-clear";
         } else {
             throw new NoPermissionException();
         }

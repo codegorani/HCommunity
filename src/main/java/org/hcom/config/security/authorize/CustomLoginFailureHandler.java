@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hcom.models.user.User;
 import org.hcom.models.user.support.UserRepository;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
@@ -20,6 +21,7 @@ import java.io.IOException;
 public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
@@ -41,7 +43,17 @@ public class CustomLoginFailureHandler extends SimpleUrlAuthenticationFailureHan
                 request.setAttribute("isError", true);
             }
 
-            request.getRequestDispatcher("/login/error").forward(request, response);
+        } else if(exception instanceof InternalAuthenticationServiceException) {
+            request.setAttribute("isError", true);
+        } else if(exception instanceof LockedException) {
+            request.setAttribute("isLocked", true);
+        } else if(exception instanceof DisabledException) {
+            request.setAttribute("isBlocked", true);
+        } else if(exception instanceof AccountExpiredException) {
+            httpSession.setAttribute("inactive", true);
+            request.setAttribute("isInactive", true);
         }
+
+        request.getRequestDispatcher("/login/error").forward(request, response);
     }
 }

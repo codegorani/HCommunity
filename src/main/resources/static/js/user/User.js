@@ -24,6 +24,10 @@ const user = {
         $('#btn-forgot-reset').on('click', function() {
             _this.passwordReset();
         });
+
+        $('#btn-inactive-clear').on('click', function() {
+            _this.inactiveClear();
+        });
     },
 
     ajaxTest: function() {
@@ -152,6 +156,38 @@ const user = {
         }).fail(function(error) {
             alert(JSON.stringify(error));
         })
+    },
+
+    inactiveClear: function() {
+        const data = {
+            'username': $('#username').val(),
+            'password': $('#password').val(),
+            'email': $('#email').val()
+        };
+
+        $.ajax({
+            method: 'POST',
+            url: '/inactive/clear',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'text',
+            data: JSON.stringify(data)
+        }).done(function(data) {
+           if(data === 'USERNAME_ERROR') {
+               alert('존재하지 않는 아이디입니다.');
+               location.reload();
+           } else if(data === 'SUCCESS') {
+               alert('휴면계정 해제가 완료되었습니다. 다시 로그인 해주세요');
+               location.href = '/login';
+           } else if(data === 'EMAIL_ERROR') {
+               alert('이메일이 올바르지 않습니다.');
+               location.reload();
+           } else if(data === 'PASSWORD_ERROR') {
+               alert('패스워드가 올바르지 않습니다.');
+               location.reload();
+           }
+        }).fail(function(error) {
+            alert(JSON.stringify(error));
+        });
     }
 }
 

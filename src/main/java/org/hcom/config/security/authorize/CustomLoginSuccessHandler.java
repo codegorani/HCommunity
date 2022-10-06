@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hcom.exception.user.NoSuchUserFoundException;
 import org.hcom.models.user.User;
+import org.hcom.models.user.enums.UserStatus;
 import org.hcom.models.user.support.UserRepository;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Slf4j
@@ -28,19 +33,33 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     private final RequestCache requestCache = new HttpSessionRequestCache();
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private final UserRepository userRepository;
+    private final HttpSession httpSession;
 
     @Transactional
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws ServletException, IOException {
-        log.debug("login success!!");
+        log.debug("login success");
         User user = userRepository.findByUsername(request.getParameter("username")).orElseThrow(NoSuchUserFoundException::new);
-        if(user.getFailCount() >= 5) {
-            redirectStrategy.sendRedirect(request, response, "/login/locked");
-        } else {
-            user.setFailCount(0);
-            userRepository.save(user);
-            resultRedirectStrategy(request, response, authentication);
+        if(user.getUserStatus().equals(UserStatus.INACTIVE)) {
+            log.debug("INACTIVE USER LOGIN");
+            httpSession.removeAttribute("user");
+            httpSession.setAttribute("inactiveUser", request.getParameter("username"));
+            throw new AccountExpiredException("INACTIVE");
+        } else if(user.getUserStatus().equals(UserStatus.BLOCKED)){
+            log.debug("BLOCKED USER LOGIN");
+            httpSession.removeAttribute("user");
+            throw new DisabledException("BLOCKED");
+        } else if(user.getUserStatus().equals(UserStatus.ACTIVE)) {
+            if (user.getFailCount() >= 5) {
+                log.debug("LOCKED USER LOGIN");
+                httpSession.removeAttribute("user");
+                throw new LockedException("LOCKED");
+            } else {
+                user.setFailCount(0);
+                userRepository.save(user);
+                resultRedirectStrategy(request, response, authentication);
+            }
         }
     }
 
