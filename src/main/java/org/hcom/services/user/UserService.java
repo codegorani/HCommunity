@@ -71,10 +71,16 @@ public class UserService implements UserDetailsService {
      * @return saved user's db index
      */
     @Transactional
-    public Long userSaveService(UserSaveRequestDTO requestDTO) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        requestDTO.setCryptPassword(passwordEncoder);
-        return userRepository.save(requestDTO.toEntity()).getIdx();
+    public String userSaveService(UserSaveRequestDTO requestDTO) {
+        User user = userRepository.findByEmail(requestDTO.getEmail()).orElse(null);
+        if (user == null) {
+            PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            requestDTO.setCryptPassword(passwordEncoder);
+            userRepository.save(requestDTO.toEntity()).getIdx();
+            return "SUCCESS";
+        } else {
+            return user.getUsername();
+        }
     }
 
     /**

@@ -40,17 +40,19 @@ const signup = {
             _this.emailValidate();
         });
 
-        $('#lastName').on('blur', function () {
+        $('#lastName').on('keyup', function () {
             _this.lastNameValidate();
         });
 
-        $('#firstName').on('blur', function () {
+        $('#firstName').on('keyup', function () {
             _this.firstNameValidate();
         });
 
         $('#password').on('keyup', function () {
             _this.passwordValidate();
-            _this.passwordEqual();
+            if($('#password-confirm').val() !== '') {
+                _this.passwordEqual();
+            }
         });
 
         $('#password-confirm').on('keyup', function () {
@@ -364,31 +366,49 @@ const signup = {
 
     firstNameValidate: function () {
         const nameValue = $('#firstName').val();
-        if (nameValue.length <= 1) {
+        const hangulPattern = /^[가-힣]*$/;
+
+        if(hangulPattern.test(nameValue)) {
+            if (nameValue.length === 0) {
+                $('#firstName-warning').css('display', 'block');
+                $('#firstName-good').css('display', 'none');
+                $('#firstName').css('border', 'solid 2px red');
+                isFirstNameValid = false;
+            } else {
+                $('#firstName-warning').css('display', 'none');
+                $('#firstName-good').css('display', 'block');
+                $('#firstName').css('border', 'solid 2px limegreen');
+                isFirstNameValid = true;
+            }
+        } else {
             $('#firstName-warning').css('display', 'block');
             $('#firstName-good').css('display', 'none');
             $('#firstName').css('border', 'solid 2px red');
             isFirstNameValid = false;
-        } else {
-            $('#firstName-warning').css('display', 'none');
-            $('#firstName-good').css('display', 'block');
-            $('#firstName').css('border', 'solid 2px limegreen');
-            isFirstNameValid = true;
         }
     },
 
     lastNameValidate: function () {
         const nameValue = $('#lastName').val();
-        if (nameValue.length === 0) {
+        const hangulPattern = /^[가-힣]*$/;
+
+        if(hangulPattern.test(nameValue)) {
+            if (nameValue.length === 0) {
+                $('#lastName-warning').css('display', 'block');
+                $('#lastName-good').css('display', 'none');
+                $('#lastName').css('border', 'solid 2px red');
+                isLastNameValid = false;
+            } else {
+                $('#lastName-warning').css('display', 'none');
+                $('#lastName-good').css('display', 'block');
+                $('#lastName').css('border', 'solid 2px limegreen');
+                isLastNameValid = true;
+            }
+        } else {
             $('#lastName-warning').css('display', 'block');
             $('#lastName-good').css('display', 'none');
             $('#lastName').css('border', 'solid 2px red');
             isLastNameValid = false;
-        } else {
-            $('#lastName-warning').css('display', 'none');
-            $('#lastName-good').css('display', 'block');
-            $('#lastName').css('border', 'solid 2px limegreen');
-            isLastNameValid = true;
         }
     },
 
@@ -482,10 +502,15 @@ const signup = {
             url: '/signup',
             method: 'post',
             contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
+            dataType: 'text',
             data: JSON.stringify(data)
-        }).done(function() {
-            window.location.href = "/welcome"
+        }).done(function(data) {
+            if(data === 'SUCCESS') {
+                window.location.href = "/welcome"
+            } else {
+                alert('이미 [' + data + ']로 가입되어있는 이메일입니다.');
+                $('#email').focus();
+            }
         }).fail(function(error) {
             alert(JSON.stringify(error));
             location.href = '/error/' + error.status;

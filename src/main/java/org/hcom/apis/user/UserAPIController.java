@@ -10,7 +10,6 @@ import org.hcom.models.user.dtos.response.UserFindAccountResponseDTO;
 import org.hcom.models.user.dtos.response.UserInAppResponseDTO;
 import org.hcom.models.user.dtos.response.UserPersonalResponseDTO;
 import org.hcom.services.user.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,7 @@ public class UserAPIController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Object> userSignupAPIControl(@Validated @RequestBody UserSaveRequestDTO requestDTO) {
+    public String userSignupAPIControl(@Validated @RequestBody UserSaveRequestDTO requestDTO) {
 //        if (bindingResult.hasErrors()) {
 //            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
 //            // 200 response with 404 status code
@@ -42,7 +41,7 @@ public class UserAPIController {
 //            // or 404 request
 //            //  return ResponseEntity.badRequest().body(new ErrorResponse("404", "Validation failure", errors));
 //        }
-        return ResponseEntity.ok(userService.userSaveService(requestDTO));
+        return userService.userSaveService(requestDTO);
     }
 
     @GetMapping("/api/v1/user/{username}")

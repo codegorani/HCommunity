@@ -71,7 +71,7 @@ public class HCommunityApplication implements CommandLineRunner {
                     .nickname("하위" + i)
                     .phoneNum("01022171844")
                     .address1("경기도 오산시 123-45")
-                    .email("none@none.com")
+                    .email("none" + i + "@none.com")
                     .build();
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             requestDTO.setCryptPassword(passwordEncoder);
